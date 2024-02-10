@@ -22,34 +22,10 @@ public class Search {
   private final CSVParser<List<String>> csvParser;
 
   /**
-   * Constructs a Search object using the specified file name to create a CSVParser.
-   *
-   * @param fileName The name of the CSV file to be searched.
-   * @param headersPresent A boolean indicating whether the CSV file has headers.
-   * @throws FileNotFoundException If the specified CSV file is not found.
-   * @throws AccessDeniedException If there is an attempt to access a file outside the 'data'
-   *     directory.
+   * Constructs a Search object using CSVParser object
    */
-  public Search(String fileName, Boolean headersPresent)
-      throws FileNotFoundException, AccessDeniedException {
-
-    // Check security clearance during instantiation of Search object
-    String folderPath = "data";
-    Path absoluteFolderPath = Paths.get(folderPath).toAbsolutePath();
-    Path csvPath = Paths.get(absoluteFolderPath + "/" + fileName);
-
-    File csvFile = new File(String.valueOf(csvPath));
-
-    // Throws FileNotFoundException if file path does not exist
-    Reader reader = new FileReader(csvFile);
-
-    // Check for injection (file could exist, but be injected outside the 'data' folder
-    if (String.valueOf(csvPath).contains("/../")) {
-      throw new AccessDeniedException(fileName);
-    }
-
-    CreatorFromRow<List<String>> searchStrategy = new SearchStrategy();
-    this.csvParser = new CSVParser<>(reader, searchStrategy, headersPresent);
+  public Search(CSVParser<List<String>> csvParser) {
+    this.csvParser = csvParser;
   }
 
   /**
@@ -101,7 +77,7 @@ public class Search {
   public List<List<String>> searchCSV(String toSearch, String header)
       throws NoSuchElementException {
     header = header.toUpperCase();
-    if (this.csvParser.getHeaderList().contains(header)) {
+    if (this.csvParser.getHeaderList() == null || this.csvParser.getHeaderList().contains(header)) {
       int index = this.csvParser.getHeaderList().indexOf(header);
       return this.searchCSV(toSearch, index);
     } else {
