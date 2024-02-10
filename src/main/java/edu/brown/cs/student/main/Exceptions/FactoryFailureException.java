@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.Exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,14 @@ import java.util.List;
  * Feel free to expand or supplement or use it for other purposes.
  */
 public class FactoryFailureException extends Exception {
-  final List<String> row;
+  private final List<String> row;
 
   public FactoryFailureException(String message, List<String> row) {
     super(message);
     this.row = new ArrayList<>(row);
+  }
+
+  public List<String> getRow() {
+    return this.row;
   }
 }
