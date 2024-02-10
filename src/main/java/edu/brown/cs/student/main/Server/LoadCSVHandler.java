@@ -31,7 +31,7 @@ public class LoadCSVHandler implements Route {
         try {
             headers = Boolean.valueOf(request.queryParams("headers")); // Could change to not wrapper
         } catch (IllegalArgumentException e) {
-            return new LoadCSVFailureResponse().serialize();
+            return new LoadCSVFailureResponse().serialize(); // Specify error reason (headers not 'True' or 'False'), refer to SearchCSVHandler for how to do
         }
 
         try {
