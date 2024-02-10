@@ -2,7 +2,9 @@ package edu.brown.cs.student.main.server;
 
 import static spark.Spark.after;
 
-import java.util.ArrayList;
+import edu.brown.cs.student.main.Server.LoadCSVHandler;
+import edu.brown.cs.student.main.Server.SearchCSVHandler;
+import edu.brown.cs.student.main.Server.ViewCSVHandler;
 import spark.Spark;
 
 /**
@@ -15,6 +17,7 @@ import spark.Spark;
  * all had the same shared state.
  */
 public class Server {
+
   // What are the endpoints that we can access... What happens if you go to them?
   public static void main(String[] args) {
     int port = 3232;
@@ -36,32 +39,21 @@ public class Server {
            - https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
            - https://portswigger.net/web-security/cors
     */
-//    after(
-//        (request, response) -> {
-//          response.header("Access-Control-Allow-Origin", "*");
-//          response.header("Access-Control-Allow-Methods", "*");
-//        });
-//
-//    // Sets up data needed for the OrderHandler. You will likely not read from local
-//    // JSON in this sprint.
-//    String menuAsJson = SoupAPIUtilities.readInJson("data/menu.json");
-//    List<Soup> menu = new ArrayList<>();
-//    try {
-//      menu = SoupAPIUtilities.deserializeMenu(menuAsJson);
-//    } catch (Exception e) {
-//      // See note in ActivityHandler about this broad Exception catch... Unsatisfactory, but gets
-//      // the job done in the gearup where it is not the focus.
-//      e.printStackTrace();
-//      System.err.println("Errored while deserializing the menu");
-//    }
-//
-//    // Setting up the handler for the GET /order and /activity endpoints
-//    Spark.get("order", new OrderHandler(menu));
-//    Spark.get("activity", new ActivityHandler());
-//    Spark.init();
-//    Spark.awaitInitialization();
-//
-//    // Notice this link alone leads to a 404... Why is that?
-//    System.out.println("Server started at http://localhost:" + port);
+    after(
+        (request, response) -> {
+          response.header("Access-Control-Allow-Origin", "*");
+          response.header("Access-Control-Allow-Methods", "*");
+        });
+
+    // Setting up the handler for the GET /order and /activity endpoints
+    LoadCSVHandler loadCSVHandler = new LoadCSVHandler();
+    Spark.get("loadcsv", loadCSVHandler);
+    Spark.get("viewcsv", new ViewCSVHandler(loadCSVHandler));
+    Spark.get("activity", new SearchCSVHandler(loadCSVHandler));
+    Spark.init();
+    Spark.awaitInitialization();
+
+    // Notice this link alone leads to a 404... Why is that?
+    System.out.println("Server started at http://localhost:" + port);
   }
 }

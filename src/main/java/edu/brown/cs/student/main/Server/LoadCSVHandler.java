@@ -1,24 +1,26 @@
 package edu.brown.cs.student.main.Server;
 
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.JsonAdapter;
 
 import edu.brown.cs.student.main.CSVParser.CSVParser;
+import edu.brown.cs.student.main.CSVParser.CreatorFromRow;
 import edu.brown.cs.student.main.SearchUtility.SearchStrategy;
+import java.util.List;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class LoadCSVHandler implements Route {
-    private CSVParser<ArrayList<String>> csvParser;
+    private CSVParser<List<String>> csvParser;
+    private boolean isLoaded;
+
+    public LoadCSVHandler() {
+        this.isLoaded = false;
+    }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -34,10 +36,11 @@ public class LoadCSVHandler implements Route {
 
         try {
             FileReader fileReader = new FileReader(fileName);
-            SearchStrategy strategyObj = new SearchStrategy();
+            CreatorFromRow<List<String>> strategyObj = new SearchStrategy();
 
-            this.csvParser = new CSVParser(fileReader, strategyObj, headers);
+            this.csvParser = new CSVParser<>(fileReader, strategyObj, headers);
             this.csvParser.parse();
+            this.isLoaded = true;
         } catch (IOException e) {
             return new LoadCSVFailureResponse().serialize();
         }
@@ -66,7 +69,11 @@ public class LoadCSVHandler implements Route {
         }
     }
 
-    public CSVParser<ArrayList<String>> getCSVParser() {
+    public boolean isLoaded() {
+        return this.isLoaded;
+    }
+
+    public CSVParser<List<String>> getCSVParser() {
         return this.csvParser;
     }
 }
