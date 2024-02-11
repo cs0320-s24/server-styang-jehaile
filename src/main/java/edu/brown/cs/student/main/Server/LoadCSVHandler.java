@@ -26,9 +26,10 @@ public class LoadCSVHandler implements Route {
 
     Boolean headers;
     try {
+
       headers = Boolean.valueOf(request.queryParams("headers")); // Could change to not wrapper
     } catch (IllegalArgumentException e) {
-      return new LoadCSVFailureResponse()
+      return new LoadCSVFailureResponse("Please enter headers parameter as 'true' or 'false'")
           .serialize(); // Specify error reason (headers not 'True' or 'False'), refer to
       // SearchCSVHandler for how to do
     }
@@ -41,7 +42,7 @@ public class LoadCSVHandler implements Route {
       this.csvParser.parse();
       this.isLoaded = true;
     } catch (IOException e) {
-      return new LoadCSVFailureResponse().serialize();
+      return new LoadCSVFailureResponse("Error reading file").serialize();
     }
     return new LoadCSVSuccessResponse().serialize();
   }
@@ -57,9 +58,9 @@ public class LoadCSVHandler implements Route {
     }
   }
 
-  public record LoadCSVFailureResponse(String responseType) {
-    public LoadCSVFailureResponse() {
-      this("Failed to load! :(");
+  public record LoadCSVFailureResponse(String responseType, String errorDescription) {
+    public LoadCSVFailureResponse(String errorDescription) {
+      this("Error", errorDescription);
     }
 
     String serialize() {

@@ -17,7 +17,7 @@ public class Server {
 
   // What are the endpoints that we can access... What happens if you go to them?
   public static void main(String[] args) {
-    int port = 3232;
+    int port = 1234;
     Spark.port(port);
     /*
        Setting CORS headers to allow cross-origin requests from the client; this is necessary for the client to
