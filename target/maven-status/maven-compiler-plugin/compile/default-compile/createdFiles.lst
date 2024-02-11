@@ -1,7 +1,6 @@
 edu/brown/cs/student/main/CSVParser/CreatorFromRow.class
 edu/brown/cs/student/main/SearchUtility/SearchStrategy.class
 edu/brown/cs/student/main/Exceptions/FactoryFailureException.class
-edu/brown/cs/student/main/Main.class
+edu/brown/cs/student/main/SearchUtility/Search.class
 edu/brown/cs/student/main/CSVParser/CSVParser.class
 edu/brown/cs/student/main/Exceptions/MalformedRowsException.class
-edu/brown/cs/student/main/SearchUtility/Search.class

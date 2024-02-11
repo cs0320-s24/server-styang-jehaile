@@ -1,17 +1,9 @@
 package edu.brown.cs.student.main.SearchUtility;
 
 import edu.brown.cs.student.main.CSVParser.CSVParser;
-import edu.brown.cs.student.main.CSVParser.CreatorFromRow;
 import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
 import edu.brown.cs.student.main.Exceptions.MalformedRowsException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,9 +13,7 @@ public class Search {
 
   private final CSVParser<List<String>> csvParser;
 
-  /**
-   * Constructs a Search object using CSVParser object
-   */
+  /** Constructs a Search object using CSVParser object */
   public Search(CSVParser<List<String>> csvParser) {
     this.csvParser = csvParser;
   }

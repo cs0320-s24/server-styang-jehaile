@@ -1,10 +1,7 @@
-package edu.brown.cs.student.main.server;
+package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
-import edu.brown.cs.student.main.Server.LoadCSVHandler;
-import edu.brown.cs.student.main.Server.SearchCSVHandler;
-import edu.brown.cs.student.main.Server.ViewCSVHandler;
 import spark.Spark;
 
 /**
