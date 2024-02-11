@@ -1,7 +1,10 @@
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/Exceptions/MalformedRowsException.java
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/CSVParser/CSVParser.java
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/SearchUtility/SearchStrategy.java
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/CSVParser/CreatorFromRow.java
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/Main.java
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/SearchUtility/Search.java
-/Users/simonyang/Desktop/CSCI0320/csv-simontyang/src/main/java/edu/brown/cs/student/main/Exceptions/FactoryFailureException.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/Server/LoadCSVHandler.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/Server/SearchCSVHandler.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/SearchUtility/SearchStrategy.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/CSVParser/CSVParser.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/Server/Server.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/Exceptions/FactoryFailureException.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/Server/ViewCSVHandler.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/Exceptions/MalformedRowsException.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/SearchUtility/Search.java
+/Users/simonyang/Desktop/CSCI0320/server-styang-jehaile/src/main/java/edu/brown/cs/student/main/CSVParser/CreatorFromRow.java
