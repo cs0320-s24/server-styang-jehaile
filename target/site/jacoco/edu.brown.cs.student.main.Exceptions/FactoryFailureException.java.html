@@ -11,9 +11,9 @@ public class FactoryFailureException extends Exception {
   private final List&lt;String&gt; row;
 
   public FactoryFailureException(String message, List&lt;String&gt; row) {
-<span class="fc" id="L14">    super(message);</span>
-<span class="fc" id="L15">    this.row = new ArrayList&lt;&gt;(row);</span>
-<span class="fc" id="L16">  }</span>
+<span class="nc" id="L14">    super(message);</span>
+<span class="nc" id="L15">    this.row = new ArrayList&lt;&gt;(row);</span>
+<span class="nc" id="L16">  }</span>
 
   public List&lt;String&gt; getRow() {
 <span class="nc" id="L19">    return this.row;</span>

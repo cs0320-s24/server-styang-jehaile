@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Server.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">s0</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.student.main.Server</a> &gt; <span class="el_source">Server.java</span></div><h1>Server.java</h1><pre class="source lang-java linenums">package edu.brown.cs.student.main.Server;
+
+import static spark.Spark.after;
+
+import spark.Spark;
+
+/**
+ * Top-level class for this demo. Contains the main() method which starts Spark and runs the various
+ * handlers (2).
+ *
+ * &lt;p&gt;Notice that the OrderHandler takes in a state (menu) that can be shared if we extended the
+ * restaurant They need to share state (a menu). This would be a great opportunity to use dependency
+ * injection. If we needed more endpoints, more functionality classes, etc. we could make sure they
+ * all had the same shared state.
+ */
+<span class="nc" id="L16">public class Server {</span>
+
+  // What are the endpoints that we can access... What happens if you go to them?
+  public static void main(String[] args) {
+<span class="nc" id="L20">    int port = 3232;</span>
+<span class="nc" id="L21">    Spark.port(port);</span>
+    /*
+       Setting CORS headers to allow cross-origin requests from the client; this is necessary for the client to
+       be able to make requests to the server.
+
+       By setting the Access-Control-Allow-Origin header to &quot;*&quot;, we allow requests from any origin.
+       This is not a good idea in real-world applications, since it opens up your server to cross-origin requests
+       from any website. Instead, you should set this header to the origin of your client, or a list of origins
+       that you trust.
+
+       By setting the Access-Control-Allow-Methods header to &quot;*&quot;, we allow requests with any HTTP method.
+       Again, it's generally better to be more specific here and only allow the methods you need, but for
+       this demo we'll allow all methods.
+
+       We recommend you learn more about CORS with these resources:
+           - https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+           - https://portswigger.net/web-security/cors
+    */
+<span class="nc" id="L39">    after(</span>
+        (request, response) -&gt; {
+<span class="nc" id="L41">          response.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);</span>
+<span class="nc" id="L42">          response.header(&quot;Access-Control-Allow-Methods&quot;, &quot;*&quot;);</span>
+<span class="nc" id="L43">        });</span>
+
+    // Setting up the handler for the GET /order and /activity endpoints
+<span class="nc" id="L46">    LoadCSVHandler loadCSVHandler = new LoadCSVHandler();</span>
+<span class="nc" id="L47">    Spark.get(&quot;loadcsv&quot;, loadCSVHandler);</span>
+<span class="nc" id="L48">    Spark.get(&quot;viewcsv&quot;, new ViewCSVHandler(loadCSVHandler));</span>
+<span class="nc" id="L49">    Spark.get(&quot;activity&quot;, new SearchCSVHandler(loadCSVHandler));</span>
+<span class="nc" id="L50">    Spark.init();</span>
+<span class="nc" id="L51">    Spark.awaitInitialization();</span>
+
+    // Notice this link alone leads to a 404... Why is that?
+<span class="nc" id="L54">    System.out.println(&quot;Server started at http://localhost:&quot; + port);</span>
+<span class="nc" id="L55">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

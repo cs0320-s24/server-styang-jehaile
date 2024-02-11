@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchCSVHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">s0</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.student.main.Server</a> &gt; <span class="el_source">SearchCSVHandler.java</span></div><h1>SearchCSVHandler.java</h1><pre class="source lang-java linenums">package edu.brown.cs.student.main.Server;
+
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import edu.brown.cs.student.main.CSVParser.CSVParser;
+import edu.brown.cs.student.main.SearchUtility.Search;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+
+public class SearchCSVHandler implements Route {
+  private final LoadCSVHandler loadCSVHandler;
+
+<span class="nc" id="L18">  public SearchCSVHandler(LoadCSVHandler loadCSVHandler) {</span>
+<span class="nc" id="L19">    this.loadCSVHandler = loadCSVHandler;</span>
+<span class="nc" id="L20">  }</span>
+
+  @Override
+  public Object handle(Request request, Response response) throws Exception {
+<span class="nc" id="L24">    String toSearch = request.queryParams(&quot;toSearch&quot;);</span>
+<span class="nc" id="L25">    String headerName = request.queryParams(&quot;headerName&quot;);</span>
+<span class="nc" id="L26">    String columnIndexString = request.queryParams(&quot;columnIndex&quot;);</span>
+<span class="nc" id="L27">    Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">    if (this.loadCSVHandler.isLoaded()) {</span>
+<span class="nc" id="L30">      CSVParser&lt;List&lt;String&gt;&gt; csvParser =</span>
+<span class="nc" id="L31">          this.loadCSVHandler.getCSVParser(); // Add null checks / error handling</span>
+<span class="nc" id="L32">      Search search = new Search(csvParser);</span>
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">      if (columnIndexString != null) {</span>
+        int columnIndex;
+
+        try {
+<span class="nc" id="L38">          columnIndex = Integer.parseInt(columnIndexString);</span>
+<span class="nc" id="L39">        } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L40">          return new SearchCSVFailureResponse(</span>
+              &quot;Index not entered as integer.&quot;); // specify failure (index not entered as number)
+<span class="nc" id="L42">        }</span>
+
+        try {
+<span class="nc" id="L45">          responseMap.put(&quot;Matching rows&quot;, search.searchCSV(toSearch, columnIndex));</span>
+<span class="nc" id="L46">        } catch (IndexOutOfBoundsException e) {</span>
+<span class="nc" id="L47">          return new SearchCSVFailureResponse(</span>
+              &quot;Column does not exist.&quot;); // specify failure (index doesn't exist / less than 0.)
+<span class="nc" id="L49">        }</span>
+
+<span class="nc" id="L51">        return new SearchCSVSuccessResponse(responseMap).serialize();</span>
+      }
+
+<span class="nc bnc" id="L54" title="All 2 branches missed.">      if (headerName != null) {</span>
+
+        try {
+<span class="nc" id="L57">          responseMap.put(&quot;Matching rows&quot;, search.searchCSV(toSearch, headerName));</span>
+<span class="nc" id="L58">        } catch (NoSuchElementException e) {</span>
+<span class="nc" id="L59">          return new SearchCSVFailureResponse(</span>
+              &quot;Header does not exist.&quot;); // specify failure (header doesn't exist)
+<span class="nc" id="L61">        }</span>
+
+<span class="nc" id="L63">        return new SearchCSVSuccessResponse(responseMap).serialize();</span>
+      }
+
+<span class="nc" id="L66">      responseMap.put(&quot;Matching rows&quot;, search.searchCSV(toSearch));</span>
+
+<span class="nc" id="L68">      return new SearchCSVSuccessResponse(responseMap).serialize();</span>
+
+    } else {
+<span class="nc" id="L71">      return new SearchCSVFailureResponse(&quot;CSV File not loaded.&quot;)</span>
+<span class="nc" id="L72">          .serialize(); // specify failure (not loaded)</span>
+    }
+  }
+
+<span class="nc" id="L76">  public record SearchCSVSuccessResponse(String responseType, Map&lt;String, Object&gt; responseMap) {</span>
+    public SearchCSVSuccessResponse(Map&lt;String, Object&gt; responseMap) {
+<span class="nc" id="L78">      this(&quot;Success&quot;, responseMap);</span>
+<span class="nc" id="L79">    }</span>
+
+    String serialize() { // error? check gearup code
+<span class="nc" id="L82">      Moshi moshi = new Moshi.Builder().build();</span>
+<span class="nc" id="L83">      JsonAdapter&lt;SearchCSVHandler.SearchCSVSuccessResponse&gt; adapter =</span>
+<span class="nc" id="L84">          moshi.adapter(SearchCSVHandler.SearchCSVSuccessResponse.class);</span>
+<span class="nc" id="L85">      return adapter.toJson(this);</span>
+    }
+  }
+
+<span class="nc" id="L89">  public record SearchCSVFailureResponse(String responseType, String errorDescription) {</span>
+    public SearchCSVFailureResponse(String errorDescription) {
+<span class="nc" id="L91">      this(&quot;Error&quot;, errorDescription);</span>
+<span class="nc" id="L92">    }</span>
+
+    String serialize() { // error? check gearup code
+<span class="nc" id="L95">      Moshi moshi = new Moshi.Builder().build();</span>
+<span class="nc" id="L96">      JsonAdapter&lt;SearchCSVHandler.SearchCSVFailureResponse&gt; adapter =</span>
+<span class="nc" id="L97">          moshi.adapter(SearchCSVHandler.SearchCSVFailureResponse.class);</span>
+<span class="nc" id="L98">      return adapter.toJson(this);</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

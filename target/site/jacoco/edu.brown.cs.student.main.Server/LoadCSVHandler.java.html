@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoadCSVHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">s0</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.student.main.Server</a> &gt; <span class="el_source">LoadCSVHandler.java</span></div><h1>LoadCSVHandler.java</h1><pre class="source lang-java linenums">package edu.brown.cs.student.main.Server;
+
+import com.squareup.moshi.Moshi;
+import edu.brown.cs.student.main.CSVParser.CSVParser;
+import edu.brown.cs.student.main.CSVParser.CreatorFromRow;
+import edu.brown.cs.student.main.SearchUtility.SearchStrategy;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+
+public class LoadCSVHandler implements Route {
+  private CSVParser&lt;List&lt;String&gt;&gt; csvParser;
+  private boolean isLoaded;
+
+<span class="nc" id="L18">  public LoadCSVHandler() {</span>
+<span class="nc" id="L19">    this.isLoaded = false;</span>
+<span class="nc" id="L20">  }</span>
+
+  @Override
+  public Object handle(Request request, Response response) throws Exception {
+
+<span class="nc" id="L25">    String fileName = request.queryParams(&quot;fileName&quot;);</span>
+
+    Boolean headers;
+    try {
+<span class="nc" id="L29">      headers = Boolean.valueOf(request.queryParams(&quot;headers&quot;)); // Could change to not wrapper</span>
+<span class="nc" id="L30">    } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L31">      return new LoadCSVFailureResponse()</span>
+<span class="nc" id="L32">          .serialize(); // Specify error reason (headers not 'True' or 'False'), refer to</span>
+      // SearchCSVHandler for how to do
+<span class="nc" id="L34">    }</span>
+
+    try {
+<span class="nc" id="L37">      FileReader fileReader = new FileReader(fileName);</span>
+<span class="nc" id="L38">      CreatorFromRow&lt;List&lt;String&gt;&gt; strategyObj = new SearchStrategy();</span>
+
+<span class="nc" id="L40">      this.csvParser = new CSVParser&lt;&gt;(fileReader, strategyObj, headers);</span>
+<span class="nc" id="L41">      this.csvParser.parse();</span>
+<span class="nc" id="L42">      this.isLoaded = true;</span>
+<span class="nc" id="L43">    } catch (IOException e) {</span>
+<span class="nc" id="L44">      return new LoadCSVFailureResponse().serialize();</span>
+<span class="nc" id="L45">    }</span>
+<span class="nc" id="L46">    return new LoadCSVSuccessResponse().serialize();</span>
+  }
+
+<span class="nc" id="L49">  public record LoadCSVSuccessResponse(String responseType) {</span>
+    public LoadCSVSuccessResponse() {
+<span class="nc" id="L51">      this(&quot;Loaded successfully! :)&quot;);</span>
+<span class="nc" id="L52">    }</span>
+
+    String serialize() {
+<span class="nc" id="L55">      Moshi moshi = new Moshi.Builder().build();</span>
+<span class="nc" id="L56">      return moshi.adapter(LoadCSVSuccessResponse.class).toJson(this);</span>
+    }
+  }
+
+<span class="nc" id="L60">  public record LoadCSVFailureResponse(String responseType) {</span>
+    public LoadCSVFailureResponse() {
+<span class="nc" id="L62">      this(&quot;Failed to load! :(&quot;);</span>
+<span class="nc" id="L63">    }</span>
+
+    String serialize() {
+<span class="nc" id="L66">      Moshi moshi = new Moshi.Builder().build();</span>
+<span class="nc" id="L67">      return moshi.adapter(LoadCSVFailureResponse.class).toJson(this);</span>
+    }
+  }
+
+  public boolean isLoaded() {
+<span class="nc" id="L72">    return this.isLoaded;</span>
+  }
+
+  public CSVParser&lt;List&lt;String&gt;&gt; getCSVParser() {
+<span class="nc" id="L76">    return this.csvParser;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
