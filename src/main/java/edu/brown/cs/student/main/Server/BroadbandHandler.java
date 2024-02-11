@@ -88,7 +88,9 @@ public class BroadbandHandler implements Route {
         // send request
         String dataResponse = this.sendRequest(stateCode, countyCode);
         BroadbandData broadbandData = BroadbandAPIUtilities.deserializeBroadbandData(dataResponse);
+        // must add time/date and state/county data to broadband data
         responseMap.put("Broadband data:", broadbandData);
+
 
         return null;
     }
