@@ -39,7 +39,7 @@ public class LoadCSVHandler implements Route {
     try {
       String folderPath = "data";
       Path absoluteFolderPath = Paths.get(folderPath).toAbsolutePath();
-      Path csvPath = Paths.get(absoluteFolderPath + "/" + fileName);
+      Path csvPath = Paths.get(absoluteFolderPath + "/" + fileName); // Add injection protection and more specific error messages
       FileReader fileReader = new FileReader(csvPath.toString());
       CreatorFromRow<List<String>> strategyObj = new SearchStrategy();
 
