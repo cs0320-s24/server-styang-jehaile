@@ -46,7 +46,7 @@ public class Server {
     LoadCSVHandler loadCSVHandler = new LoadCSVHandler();
     Spark.get("loadcsv", loadCSVHandler);
     Spark.get("viewcsv", new ViewCSVHandler(loadCSVHandler));
-    Spark.get("activity", new SearchCSVHandler(loadCSVHandler));
+    Spark.get("searchcsv", new SearchCSVHandler(loadCSVHandler));
     Spark.init();
     Spark.awaitInitialization();
 

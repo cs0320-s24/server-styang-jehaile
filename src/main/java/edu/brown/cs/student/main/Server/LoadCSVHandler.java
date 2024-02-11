@@ -6,6 +6,8 @@ import edu.brown.cs.student.main.CSVParser.CreatorFromRow;
 import edu.brown.cs.student.main.SearchUtility.SearchStrategy;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import spark.Request;
 import spark.Response;
@@ -35,7 +37,10 @@ public class LoadCSVHandler implements Route {
     }
 
     try {
-      FileReader fileReader = new FileReader(fileName);
+      String folderPath = "data";
+      Path absoluteFolderPath = Paths.get(folderPath).toAbsolutePath();
+      Path csvPath = Paths.get(absoluteFolderPath + "/" + fileName);
+      FileReader fileReader = new FileReader(csvPath.toString());
       CreatorFromRow<List<String>> strategyObj = new SearchStrategy();
 
       this.csvParser = new CSVParser<>(fileReader, strategyObj, headers);
