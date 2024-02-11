@@ -4,6 +4,9 @@ import static spark.Spark.after;
 
 import spark.Spark;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * Top-level class for this demo. Contains the main() method which starts Spark and runs the various
  * handlers (2).
@@ -16,7 +19,7 @@ import spark.Spark;
 public class Server {
 
   // What are the endpoints that we can access... What happens if you go to them?
-  public static void main(String[] args) {
+  public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
     int port = 1234;
     Spark.port(port);
     /*
@@ -47,6 +50,7 @@ public class Server {
     Spark.get("loadcsv", loadCSVHandler);
     Spark.get("viewcsv", new ViewCSVHandler(loadCSVHandler));
     Spark.get("searchcsv", new SearchCSVHandler(loadCSVHandler));
+    Spark.get("broadband", new BroadbandHandler());
     Spark.init();
     Spark.awaitInitialization();
 
