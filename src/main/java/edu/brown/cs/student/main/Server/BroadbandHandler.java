@@ -28,12 +28,13 @@ public class BroadbandHandler implements Route {
                         .GET()
                         .build();
 
-        // Send that API request then store the response in this variable. Note the generic type.
+
         HttpResponse<String> stateToCode =
                 HttpClient.newBuilder()
                         .build()
                         .send(stateToCodeRequest, HttpResponse.BodyHandlers.ofString());
 
+        //  (move to BroadbandAPIUtilities?)
         Moshi moshi = new Moshi.Builder().build();
         Type type = com.squareup.moshi.Types.newParameterizedType(List.class, List.class);
         JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
@@ -54,7 +55,7 @@ public class BroadbandHandler implements Route {
         // get state code from map
         // Add failure response if state not in map
         String stateCode = this.stateToCode.get(targetState);
-        String countyCode = "";
+        String countyCode = null;
 
         // get county code from county
         HttpRequest stateToCodeRequest =
@@ -70,12 +71,11 @@ public class BroadbandHandler implements Route {
                         .build()
                         .send(stateToCodeRequest, HttpResponse.BodyHandlers.ofString());
 
+        // (move to BroadbandAPIUtilities?)
         Moshi moshi = new Moshi.Builder().build();
-
         Type type = com.squareup.moshi.Types.newParameterizedType(List.class, List.class);
         JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
         List<List<String>> countyList = adapter.fromJson(countyToCode.body());
-//    HashMap<String, String> countyMap = new HashMap<>();
         for (int i = 1; i < countyList.size(); i++) {
             if (countyList.get(i).get(3).equals(targetCounty)) {
                 countyCode = countyList.get(i).get(3);
@@ -86,6 +86,10 @@ public class BroadbandHandler implements Route {
 
 
         // send request
+        String dataResponse = this.sendRequest(stateCode, countyCode);
+        BroadbandData broadbandData = BroadbandAPIUtilities.deserializeBroadbandData(dataResponse);
+        responseMap.put("Broadband data:", broadbandData);
+
         return null;
     }
 
