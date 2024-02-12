@@ -63,11 +63,11 @@ public class LoadCSVHandler implements Route {
 //    return new LoadCSVSuccessResponse().serialize();
   }
 
-  public record LoadCSVSuccessResponse(String responseType, String currentDateTime) {
+  public record LoadCSVSuccessResponse(String responseType) {
     public LoadCSVSuccessResponse() {
-      this("Loaded successfully! :)", LocalDateTime.now().toString());
+//      this("Loaded successfully! :)", LocalDateTime.now().toString());
 
-//      this("Loaded successfully! :)");
+      this("Loaded successfully! :)");
 //      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
 //      LocalDateTime now = LocalDateTime.now();
 //      System.out.println(dtf.format(now));
