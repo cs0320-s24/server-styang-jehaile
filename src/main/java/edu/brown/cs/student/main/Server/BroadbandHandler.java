@@ -17,7 +17,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
-public class BroadbandHandler implements Route {
+public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
   private HashMap<String, String> stateToCode;
 
   public BroadbandHandler() throws URISyntaxException, IOException, InterruptedException {
@@ -84,7 +84,7 @@ public class BroadbandHandler implements Route {
         break;
       }
       else{
-        return new BroadbandFailureResponse("failed to find county","error", "current");
+        return new BroadbandFailureResponse("failed to find county","error", "current").serialize();
       }
       // failure response (no county)
 
@@ -96,7 +96,7 @@ public class BroadbandHandler implements Route {
     // must add time/date and state/county data to broadband data
     responseMap.put("Broadband data:", broadbandData);
 
-    return new BroadbandSuccessResponse(responseMap);
+    return new BroadbandSuccessResponse(responseMap).serialize();
 
   }
 
