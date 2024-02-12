@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,11 @@ public class BroadbandHandler implements Route {
         countyCode = countyList.get(i).get(3);
         break;
       }
+      else{
+        return new BroadbandFailureResponse("failed to find county","error", "current");
+      }
       // failure response (no county)
+
     }
 
     // send request
@@ -91,7 +96,8 @@ public class BroadbandHandler implements Route {
     // must add time/date and state/county data to broadband data
     responseMap.put("Broadband data:", broadbandData);
 
-    return null;
+    return new BroadbandSuccessResponse(responseMap);
+
   }
 
   private String sendRequest(String stateCode, String countyCode)
@@ -118,7 +124,27 @@ public class BroadbandHandler implements Route {
     return sentDataResponse.body();
   }
 
-  public record BroadbandSuccessResponse(String responseType, String dateTime, ){
+  public record BroadbandSuccessResponse(String responseType, String dateTime,Map<String, Object> responseMap){
+    public BroadbandSuccessResponse(Map<String, Object> responseMap){
+      this("Loaded successfully! :)", LocalDateTime.now().toString(), responseMap);
+    }
+    String serialize(){
+      Moshi moshi = new Moshi.Builder().build();
+      JsonAdapter<BroadbandHandler.BroadbandSuccessResponse> adapter = moshi.adapter((BroadbandHandler.BroadbandSuccessResponse.class));
+      return adapter.toJson(this);
+    }
+  }
+  public record BroadbandFailureResponse(String responseType, String errorDescription, String dateTime){
+    public BroadbandFailureResponse(String errorDescription, String dateTime) {
+
+      this("Error", errorDescription, "@" + LocalDateTime.now().toString());
+
+    }
+    String serialize(){
+      Moshi moshi = new Moshi.Builder().build();
+      JsonAdapter<BroadbandHandler.BroadbandFailureResponse> adapter = moshi.adapter(BroadbandHandler.BroadbandFailureResponse.class);
+      return adapter.toJson(this);
+    }
 
   }
 }
