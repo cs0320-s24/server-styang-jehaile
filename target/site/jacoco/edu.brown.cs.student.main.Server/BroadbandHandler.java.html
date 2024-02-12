@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BroadbandHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">s0</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.student.main.Server</a> &gt; <span class="el_source">BroadbandHandler.java</span></div><h1>BroadbandHandler.java</h1><pre class="source lang-java linenums">package edu.brown.cs.student.main.Server;
+
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+
+public class BroadbandHandler implements Route {
+  private HashMap&lt;String, String&gt; stateToCode;
+
+  public BroadbandHandler() throws URISyntaxException, IOException, InterruptedException {
+    HttpRequest stateToCodeRequest =
+<span class="nc" id="L24">        HttpRequest.newBuilder()</span>
+            .uri(new URI(&quot;https://api.census.gov/data/2010/dec/sf1?get=NAME&amp;for=state:*&quot;))
+<span class="nc" id="L26">            .GET()</span>
+<span class="nc" id="L27">            .build();</span>
+<span class="nc" id="L28"></span>
+<span class="nc" id="L29">    HttpResponse&lt;String&gt; stateToCode =</span>
+        HttpClient.newBuilder()
+            .build()
+            .send(stateToCodeRequest, HttpResponse.BodyHandlers.ofString());
+<span class="nc" id="L33"></span>
+<span class="nc" id="L34">    //  (move to BroadbandAPIUtilities?)</span>
+<span class="nc" id="L35">    Moshi moshi = new Moshi.Builder().build();</span>
+    Type type = com.squareup.moshi.Types.newParameterizedType(List.class, List.class);
+    JsonAdapter&lt;List&lt;List&lt;String&gt;&gt;&gt; adapter = moshi.adapter(type);
+<span class="nc" id="L38">    List&lt;List&lt;String&gt;&gt; stateList = adapter.fromJson(stateToCode.body());</span>
+<span class="nc" id="L39">    HashMap&lt;String, String&gt; stateToCodeMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L40">    for (int i = 1; i &lt; stateList.size(); i++) {</span>
+<span class="nc" id="L41">      stateToCodeMap.put(stateList.get(i).get(0), stateList.get(i).get(1));</span>
+<span class="nc" id="L42">    }</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    this.stateToCode = stateToCodeMap;</span>
+<span class="nc" id="L44">  }</span>
+
+<span class="nc" id="L46">  @Override</span>
+<span class="nc" id="L47">  public Object handle(Request request, Response response)</span>
+      throws URISyntaxException, IOException, InterruptedException {
+    String targetState = request.queryParams(&quot;state&quot;);
+    String targetCounty = request.queryParams(&quot;county&quot;);
+<span class="nc" id="L51">    Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L52"></span>
+<span class="nc" id="L53">    // get state code from map</span>
+    // Add failure response if state not in map
+    String stateCode = this.stateToCode.get(targetState);
+    String countyCode = null;
+<span class="nc" id="L57"></span>
+<span class="nc" id="L58">    // get county code from county</span>
+    HttpRequest stateToCodeRequest =
+        HttpRequest.newBuilder()
+            .uri(
+<span class="nc" id="L62">                new URI(</span>
+<span class="nc" id="L63">                    &quot;https://api.census.gov/data/2010/dec/sf1?get=NAME&amp;for=county:*&amp;in=state:&quot;</span>
+<span class="nc" id="L64">                        + stateCode))</span>
+<span class="nc" id="L65">            .GET()</span>
+            .build();
+
+    // Send that API request then store the response in this variable. Note the generic type.
+    // HANDLE EXCEPTIONS
+<span class="nc" id="L70">    HttpResponse&lt;String&gt; countyToCode =</span>
+<span class="nc" id="L71">        HttpClient.newBuilder()</span>
+<span class="nc" id="L72">            .build()</span>
+            .send(stateToCodeRequest, HttpResponse.BodyHandlers.ofString());
+
+<span class="nc" id="L75">    // (move to BroadbandAPIUtilities?)</span>
+<span class="nc" id="L76">    Moshi moshi = new Moshi.Builder().build();</span>
+<span class="nc" id="L77">    Type type = com.squareup.moshi.Types.newParameterizedType(List.class, List.class);</span>
+<span class="nc" id="L78">    JsonAdapter&lt;List&lt;List&lt;String&gt;&gt;&gt; adapter = moshi.adapter(type);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">    List&lt;List&lt;String&gt;&gt; countyList = adapter.fromJson(countyToCode.body());</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">    for (int i = 1; i &lt; countyList.size(); i++) {</span>
+<span class="nc" id="L81">      if (countyList.get(i).get(3).equals(targetCounty)) {</span>
+<span class="nc" id="L82">        countyCode = countyList.get(i).get(3);</span>
+        break;
+      }
+      // failure response (no county)
+    }
+
+    // send request
+<span class="nc" id="L89">    String dataResponse = this.sendRequest(stateCode, countyCode);</span>
+<span class="nc" id="L90">    BroadbandData broadbandData = BroadbandAPIUtilities.deserializeBroadbandData(dataResponse);</span>
+    // must add time/date and state/county data to broadband data
+<span class="nc" id="L92">    responseMap.put(&quot;Broadband data:&quot;, broadbandData);</span>
+
+    return null;
+<span class="nc" id="L95">  }</span>
+
+  private String sendRequest(String stateCode, String countyCode)
+      throws URISyntaxException, IOException, InterruptedException { // figure out error handling
+
+    HttpRequest buildDataRequest =
+        HttpRequest.newBuilder()
+<span class="nc" id="L102">            .uri(</span>
+<span class="nc" id="L103">                new URI(</span>
+                    &quot;https://api.census.gov/data/2021/acs/acs1/subject/variables?get=NAME,S2802_C03&quot;
+                        + &quot;_022E&amp;for=county:&quot;
+                        + countyCode
+<span class="nc" id="L107">                        + &quot;&amp;in=state:&quot;</span>
+<span class="nc" id="L108">                        + stateCode))</span>
+            .GET()
+            .build();
+
+<span class="nc" id="L112">    // Send that API request then store the response in this variable. Note the generic type.</span>
+<span class="nc" id="L113">    HttpResponse&lt;String&gt; sentDataResponse =</span>
+<span class="nc" id="L114">        HttpClient.newBuilder()</span>
+            .build()
+<span class="nc" id="L116">            .send(buildDataRequest, HttpResponse.BodyHandlers.ofString());</span>
+
+    return sentDataResponse.body();
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

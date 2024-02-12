@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import spark.Request;
 import spark.Response;
@@ -16,9 +18,11 @@ import spark.Route;
 public class LoadCSVHandler implements Route {
   private CSVParser<List<String>> csvParser;
   private boolean isLoaded;
+//  private String message;
 
   public LoadCSVHandler() {
     this.isLoaded = false;
+//    this.message = "";
   }
 
   @Override
@@ -39,7 +43,11 @@ public class LoadCSVHandler implements Route {
     try {
       String folderPath = "data";
       Path absoluteFolderPath = Paths.get(folderPath).toAbsolutePath();
-      Path csvPath = Paths.get(absoluteFolderPath + "/" + fileName); // Add injection protection and more specific error messages
+      Path csvPath =
+          Paths.get(
+              absoluteFolderPath
+                  + "/"
+                  + fileName); // Add injection protection and more specific error messages
       FileReader fileReader = new FileReader(csvPath.toString());
       CreatorFromRow<List<String>> strategyObj = new SearchStrategy();
 
@@ -49,13 +57,24 @@ public class LoadCSVHandler implements Route {
     } catch (IOException e) {
       return new LoadCSVFailureResponse("Error reading file").serialize();
     }
-    return new LoadCSVSuccessResponse().serialize();
+    LoadCSVSuccessResponse successResponse = new LoadCSVSuccessResponse();
+    return successResponse.serialize();
+
+//    return new LoadCSVSuccessResponse().serialize();
   }
 
-  public record LoadCSVSuccessResponse(String responseType) {
+  public record LoadCSVSuccessResponse(String responseType, String currentDateTime) {
     public LoadCSVSuccessResponse() {
-      this("Loaded successfully! :)");
+      this("Loaded successfully! :)", LocalDateTime.now().toString());
+
+//      this("Loaded successfully! :)");
+//      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+//      LocalDateTime now = LocalDateTime.now();
+//      System.out.println(dtf.format(now));
+//      this.message =  dtf.format(now);
+
     }
+
 
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();

@@ -2,10 +2,9 @@ package edu.brown.cs.student.main.Server;
 
 import static spark.Spark.after;
 
-import spark.Spark;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
+import spark.Spark;
 
 /**
  * Top-level class for this demo. Contains the main() method which starts Spark and runs the various
@@ -19,7 +18,8 @@ import java.net.URISyntaxException;
 public class Server {
 
   // What are the endpoints that we can access... What happens if you go to them?
-  public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
+  public static void main(String[] args)
+      throws URISyntaxException, IOException, InterruptedException {
     int port = 1234;
     Spark.port(port);
     /*

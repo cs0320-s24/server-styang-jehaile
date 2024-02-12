@@ -2,11 +2,13 @@ edu/brown/cs/student/main/CSVParser/CreatorFromRow.class
 edu/brown/cs/student/main/Server/ViewCSVHandler$ViewCSVFailureResponse.class
 edu/brown/cs/student/main/SearchUtility/SearchStrategy.class
 edu/brown/cs/student/main/Exceptions/FactoryFailureException.class
+edu/brown/cs/student/main/Server/BroadbandAPIUtilities.class
 edu/brown/cs/student/main/Server/ViewCSVHandler.class
 edu/brown/cs/student/main/Server/ViewCSVHandler$ViewCSVSuccessResponse.class
 edu/brown/cs/student/main/Server/LoadCSVHandler$LoadCSVFailureResponse.class
 edu/brown/cs/student/main/Server/SearchCSVHandler.class
 edu/brown/cs/student/main/SearchUtility/Search.class
+edu/brown/cs/student/main/Server/BroadbandData.class
 edu/brown/cs/student/main/Server/SearchCSVHandler$SearchCSVSuccessResponse.class
 edu/brown/cs/student/main/Server/LoadCSVHandler.class
 edu/brown/cs/student/main/CSVParser/CSVParser.class
