@@ -62,11 +62,6 @@
       <version>RELEASE</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
-    </dependency>
 
     <!--
            JUnit is a unit testing library for Java.
@@ -76,6 +71,11 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.4.0</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.1-jre</version>
     </dependency>
 
   </dependencies>

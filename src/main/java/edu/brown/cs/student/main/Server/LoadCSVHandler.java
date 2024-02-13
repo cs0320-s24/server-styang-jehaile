@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import spark.Request;
 import spark.Response;
@@ -18,11 +16,11 @@ import spark.Route;
 public class LoadCSVHandler implements Route {
   private CSVParser<List<String>> csvParser;
   private boolean isLoaded;
-//  private String message;
+  //  private String message;
 
   public LoadCSVHandler() {
     this.isLoaded = false;
-//    this.message = "";
+    //    this.message = "";
   }
 
   @Override
@@ -60,21 +58,20 @@ public class LoadCSVHandler implements Route {
     LoadCSVSuccessResponse successResponse = new LoadCSVSuccessResponse();
     return successResponse.serialize();
 
-//    return new LoadCSVSuccessResponse().serialize();
+    //    return new LoadCSVSuccessResponse().serialize();
   }
 
   public record LoadCSVSuccessResponse(String responseType) {
     public LoadCSVSuccessResponse() {
-//      this("Loaded successfully! :)", LocalDateTime.now().toString());
+      //      this("Loaded successfully! :)", LocalDateTime.now().toString());
 
       this("Loaded successfully! :)");
-//      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
-//      LocalDateTime now = LocalDateTime.now();
-//      System.out.println(dtf.format(now));
-//      this.message =  dtf.format(now);
+      //      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+      //      LocalDateTime now = LocalDateTime.now();
+      //      System.out.println(dtf.format(now));
+      //      this.message =  dtf.format(now);
 
     }
-
 
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();

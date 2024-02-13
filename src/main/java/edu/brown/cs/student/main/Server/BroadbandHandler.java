@@ -54,7 +54,8 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     // get state code from map
     // Add failure response if state not in map
     if (!this.stateToCode.containsKey(targetState)) {
-      return new BroadbandFailureResponse("State does not exist", LocalDateTime.now().toString()).serialize();
+      return new BroadbandFailureResponse("State does not exist", LocalDateTime.now().toString())
+          .serialize();
     }
     String stateCode = this.stateToCode.get(targetState.toLowerCase());
 
@@ -82,7 +83,11 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
     List<List<String>> countyList = adapter.fromJson(countyToCode.body());
     for (int i = 1; i < countyList.size(); i++) {
-      if (countyList.get(i).get(0).toLowerCase().contains(targetCounty.toLowerCase() + " county,")) {
+      if (countyList
+          .get(i)
+          .get(0)
+          .toLowerCase()
+          .contains(targetCounty.toLowerCase() + " county,")) {
         countyCode = countyList.get(i).get(2);
         break;
       }
@@ -91,7 +96,6 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
       return new BroadbandFailureResponse("failed to find county", "current").serialize();
     }
 
-
     // send request
     String dataResponse = this.sendRequest(stateCode, countyCode);
     BroadbandData broadbandData = BroadbandAPIUtilities.deserializeBroadbandData(dataResponse);
@@ -99,7 +103,6 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     responseMap.put("Broadband data:", broadbandData);
 
     return new BroadbandSuccessResponse(responseMap).serialize();
-
   }
 
   private String sendRequest(String stateCode, String countyCode)
@@ -126,32 +129,38 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     return sentDataResponse.body();
   }
 
-  public record BroadbandSuccessResponse(String responseType, String dateTime,Map<String, Object> responseMap){
-    public BroadbandSuccessResponse(Map<String, Object> responseMap){
+  public record BroadbandSuccessResponse(
+      String responseType, String dateTime, Map<String, Object> responseMap) {
+    public BroadbandSuccessResponse(Map<String, Object> responseMap) {
       this("Loaded successfully! :)", LocalDateTime.now().toString(), responseMap);
     }
-    String serialize(){
+
+    String serialize() {
       Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<BroadbandHandler.BroadbandSuccessResponse> adapter = moshi.adapter((BroadbandHandler.BroadbandSuccessResponse.class));
+      JsonAdapter<BroadbandHandler.BroadbandSuccessResponse> adapter =
+          moshi.adapter((BroadbandHandler.BroadbandSuccessResponse.class));
       return adapter.toJson(this);
     }
   }
-  public record BroadbandFailureResponse(String responseType, String errorDescription, String dateTime){
+
+  public record BroadbandFailureResponse(
+      String responseType, String errorDescription, String dateTime) {
     public BroadbandFailureResponse(String errorDescription, String dateTime) {
 
       this("Error", errorDescription, "@" + LocalDateTime.now().toString());
-
     }
-    String serialize(){
+
+    String serialize() {
       Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<BroadbandHandler.BroadbandFailureResponse> adapter = moshi.adapter(BroadbandHandler.BroadbandFailureResponse.class);
+      JsonAdapter<BroadbandHandler.BroadbandFailureResponse> adapter =
+          moshi.adapter(BroadbandHandler.BroadbandFailureResponse.class);
       return adapter.toJson(this);
     }
-
   }
 }
 
-
-//Acceptance Criteria: the response should include the date and time that all data was retrieved from the ACS API by
-// your API server, as well as the state and county names your server received. Whoever calls your API can use this to
+// Acceptance Criteria: the response should include the date and time that all data was retrieved
+// from the ACS API by
+// your API server, as well as the state and county names your server received. Whoever calls your
+// API can use this to
 // (e.g.) help debug problems on their end.

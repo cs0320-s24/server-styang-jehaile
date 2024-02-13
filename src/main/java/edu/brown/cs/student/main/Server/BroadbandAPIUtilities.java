@@ -9,6 +9,7 @@ import java.util.List;
 public class BroadbandAPIUtilities { // error handling?
   public static BroadbandData deserializeBroadbandData(String jsonBroadbandData)
       throws IOException {
+
     Moshi moshi = new Moshi.Builder().build();
     Type type = com.squareup.moshi.Types.newParameterizedType(List.class, List.class);
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);

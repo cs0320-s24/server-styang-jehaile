@@ -2,12 +2,13 @@ package edu.brown.cs.student.main.Server;
 
 import spark.Request;
 
-public class MockRequest extends Request {
+public class StateCountyRequest extends Request {
+  //statencountyrequest - mock could be misleading
 
   private String state;
   private String county;
 
-  public MockRequest(String state, String county) {
+  public StateCountyRequest(String state, String county) {
     this.state = state;
     this.county = county;
   }
