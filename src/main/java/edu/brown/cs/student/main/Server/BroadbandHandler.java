@@ -39,7 +39,7 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     List<List<String>> stateList = adapter.fromJson(stateToCode.body());
     HashMap<String, String> stateToCodeMap = new HashMap<>();
     for (int i = 1; i < stateList.size(); i++) {
-      stateToCodeMap.put(stateList.get(i).get(0), stateList.get(i).get(1));
+      stateToCodeMap.put(stateList.get(i).get(0).toLowerCase(), stateList.get(i).get(1));
     }
     this.stateToCode = stateToCodeMap;
   }
@@ -53,7 +53,7 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
 
     // get state code from map
     // Add failure response if state not in map
-    String stateCode = this.stateToCode.get(targetState);
+    String stateCode = this.stateToCode.get(targetState.toLowerCase());
     String countyCode = null;
 
     // get county code from county
@@ -79,7 +79,7 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
     List<List<String>> countyList = adapter.fromJson(countyToCode.body());
     for (int i = 1; i < countyList.size(); i++) {
-      if (countyList.get(i).get(3).equals(targetCounty)) {
+      if (countyList.get(i).get(3).equalsIgnoreCase(targetCounty)) {
         countyCode = countyList.get(i).get(3);
         break;
       }
