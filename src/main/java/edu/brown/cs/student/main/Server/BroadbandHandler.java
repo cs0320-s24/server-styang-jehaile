@@ -82,8 +82,8 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
     JsonAdapter<List<List<String>>> adapter = moshi.adapter(type);
     List<List<String>> countyList = adapter.fromJson(countyToCode.body());
     for (int i = 1; i < countyList.size(); i++) {
-      if (countyList.get(i).get(0).equalsIgnoreCase(targetCounty)) {
-        countyCode = countyList.get(i).get(3);
+      if (countyList.get(i).get(0).toLowerCase().contains(targetCounty.toLowerCase() + " county,")) {
+        countyCode = countyList.get(i).get(2);
         break;
       }
     }
