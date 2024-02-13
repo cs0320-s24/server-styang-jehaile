@@ -83,9 +83,7 @@ public class BroadbandHandler implements Route, BroadbandHandlerGeneric {
         countyCode = countyList.get(i).get(3);
         break;
       }
-      else{
-        return new BroadbandFailureResponse("failed to find county","error", "current").serialize();
-      }
+      return new BroadbandFailureResponse("failed to find county","error", "current").serialize();
       // failure response (no county)
 
     }
