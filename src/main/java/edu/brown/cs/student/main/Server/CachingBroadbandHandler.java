@@ -14,7 +14,7 @@ import com.google.common.cache.LoadingCache;
 
 public class CachingBroadbandHandler implements BroadbandHandlerGeneric {
   private final BroadbandHandlerGeneric toWrap;
-  private final LoadingCache<String, Collection<String>> cache;
+  private final LoadingCache<Request, Object> cache;
 
 
   public CachingBroadbandHandler(BroadbandHandlerGeneric toWrap) {
@@ -33,18 +33,16 @@ public class CachingBroadbandHandler implements BroadbandHandlerGeneric {
         .build(
             // Strategy pattern: how should the cache behave when
             // it's asked for something it doesn't have?
-                new CacheLoader<String, Collection<String>>() {
+                new CacheLoader<Request, Object>() {
                     private Request request;
-                    private Response response;
                     @Override
-                    public Collection<String> load(String key) throws Exception {
+                    public Object load(Request keyRequest) throws Exception {
                         // Implement logic to load data associated with the key
 //                        Request request = new Request(); // You need to create a Request object here
 //                        Response response = new Response(); // You need to create a Response object here
-//                        return (Collection<String>) toWrap.handle(request, response);
-//                        return (Collection<String>) toWrap.handle(new Request(), new Response())
-                        return (Collection<String>) toWrap.handle(this.request, this.response);
-//
+                        return toWrap.handle(keyRequest, null);
+//                        return (Collection<String>) toWrap.handle(new Request(), new Response());
+//                        return (Collection<String>) toWrap.handle(this.request, this.response);
 //                        Object result = toWrap.handle(this.request, this.response);
 //                        if (result instanceof Collection) {
 //                            return (Collection<String>) result;
@@ -76,9 +74,7 @@ public class CachingBroadbandHandler implements BroadbandHandlerGeneric {
 
 
   @Override
-  public Object handle(Request request, Response response)
-
-      throws URISyntaxException, IOException, InterruptedException {
+  public Object handle(Request request, Response response) {
       return null;
   }
 //  public Object handle(Request resquest){
