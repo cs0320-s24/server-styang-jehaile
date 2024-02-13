@@ -7,11 +7,12 @@ import java.util.concurrent.TimeUnit;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import javax.servlet.http.HttpServletRequest;
 
 public class CachingBroadbandHandler implements Route, BroadbandHandlerGeneric {
 
   private final BroadbandHandlerGeneric toWrap;
-  private final LoadingCache<Request, Object> cache;
+  private final LoadingCache<String, Object> cache;
 
 
   public CachingBroadbandHandler(BroadbandHandlerGeneric toWrap) {
@@ -27,21 +28,28 @@ public class CachingBroadbandHandler implements Route, BroadbandHandlerGeneric {
         // Keep statistical info around for profiling purposes
         .recordStats()
         .build(
-            // Strategy pattern: how should the cache behave when
-            // it's asked for something it doesn't have?
-            new CacheLoader<Request, Object>() {
+            // Strategy pattern: how should the cache behave when it's asked for something it doesn't have?
+            new CacheLoader<String, Object>() {
               private Request request;
 
               @Override
-              public Object load(Request keyRequest) throws Exception {
-                return toWrap.handle(keyRequest, null);
+                public Object load (String requestKey) throws Exception{
+
+                String[] splitKey = requestKey.split(",");
+                MockRequest mockRequest = new MockRequest(splitKey[0], splitKey[1]);
+                return toWrap.handle(mockRequest, null);
               }
             });
   }
 
   @Override
   public Object handle(Request request, Response response) {
-    Object result = cache.getUnchecked(request);
+    System.out.println(cache.asMap());
+    String targetState = request.queryParams("state");
+    String targetCounty = request.queryParams("county");
+    String requestKey = (targetState + "," + targetCounty);
+    Object result = cache.getUnchecked(requestKey);
     return result;
   }
 }
+
