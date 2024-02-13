@@ -20,7 +20,6 @@ public class LoadCSVHandler implements Route {
 
   public LoadCSVHandler() {
     this.isLoaded = false;
-    //    this.message = "";
   }
 
   @Override
@@ -58,7 +57,6 @@ public class LoadCSVHandler implements Route {
     LoadCSVSuccessResponse successResponse = new LoadCSVSuccessResponse();
     return successResponse.serialize();
 
-    //    return new LoadCSVSuccessResponse().serialize();
   }
 
   public record LoadCSVSuccessResponse(String responseType) {
