@@ -1,8 +1,10 @@
-package edu.brown.cs.student.main.Server;
+package edu.brown.cs.student.main.Server.CSV;
 
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.CSVParser.CSVParser;
 import edu.brown.cs.student.main.CSVParser.CreatorFromRow;
+import edu.brown.cs.student.main.Exceptions.FactoryFailureException;
+import edu.brown.cs.student.main.Exceptions.MalformedRowsException;
 import edu.brown.cs.student.main.SearchUtility.SearchStrategy;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,18 +26,20 @@ public class LoadCSVHandler implements Route {
   }
 
   @Override
-  public Object handle(Request request, Response response) throws Exception {
+  public Object handle(Request request, Response response) {
 
     String fileName = request.queryParams("fileName");
 
-    Boolean headers;
-    try {
+    if (fileName == null) {
+      return new LoadCSVFailureResponse("Please enter fileName as parameter.");
+    }
 
-      headers = Boolean.valueOf(request.queryParams("headers")); // Could change to not wrapper
+    boolean headers;
+    try {
+      headers = Boolean.parseBoolean(request.queryParams("headers")); // Could change to not wrapper
     } catch (IllegalArgumentException e) {
-      return new LoadCSVFailureResponse("Please enter headers parameter as 'true' or 'false'")
-          .serialize(); // Specify error reason (headers not 'True' or 'False'), refer to
-      // SearchCSVHandler for how to do
+      return new LoadCSVFailureResponse("Please enter headers parameter as "
+          + "\"true\" or \"false\"").serialize(); // Specify error reason (headers not 'True' or 'False')
     }
 
     try {
@@ -52,25 +56,19 @@ public class LoadCSVHandler implements Route {
       this.csvParser = new CSVParser<>(fileReader, strategyObj, headers);
       this.csvParser.parse();
       this.isLoaded = true;
-    } catch (IOException e) {
+    } catch (IOException | FactoryFailureException e) {
       return new LoadCSVFailureResponse("Error reading file").serialize();
+    } catch (MalformedRowsException e) {
+      return new LoadCSVFailureResponse("Malformed file. "
+          + "Please ensure all rows contain the same number of columns.");
     }
-    LoadCSVSuccessResponse successResponse = new LoadCSVSuccessResponse();
-    return successResponse.serialize();
 
-    //    return new LoadCSVSuccessResponse().serialize();
+    return new LoadCSVSuccessResponse().serialize();
   }
 
   public record LoadCSVSuccessResponse(String responseType) {
     public LoadCSVSuccessResponse() {
-      //      this("Loaded successfully! :)", LocalDateTime.now().toString());
-
       this("Loaded successfully! :)");
-      //      DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
-      //      LocalDateTime now = LocalDateTime.now();
-      //      System.out.println(dtf.format(now));
-      //      this.message =  dtf.format(now);
-
     }
 
     String serialize() {
