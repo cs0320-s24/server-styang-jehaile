@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.Server;
+package edu.brown.cs.student.main.Server.CSV;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -18,7 +18,7 @@ public class ViewCSVHandler implements Route {
   }
 
   @Override
-  public Object handle(Request request, Response response) throws Exception {
+  public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();
 
     if (this.loadCSVHandler.isLoaded()) {
@@ -36,7 +36,8 @@ public class ViewCSVHandler implements Route {
 
   public record ViewCSVSuccessResponse(String responseType, Map<String, Object> responseMap) {
     public ViewCSVSuccessResponse(Map<String, Object> responseMap) {
-      this("Success", responseMap);
+      this(
+          "Success", responseMap);
     }
 
     String serialize() { // error? check gearup code

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.main.Server;
+package edu.brown.cs.student.main.Server.CSV;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -13,6 +13,7 @@ import spark.Response;
 import spark.Route;
 
 public class SearchCSVHandler implements Route {
+
   private final LoadCSVHandler loadCSVHandler;
 
   public SearchCSVHandler(LoadCSVHandler loadCSVHandler) {
@@ -20,15 +21,19 @@ public class SearchCSVHandler implements Route {
   }
 
   @Override
-  public Object handle(Request request, Response response) throws Exception {
+  public Object handle(Request request, Response response) {
     String toSearch = request.queryParams("toSearch");
     String headerName = request.queryParams("headerName");
     String columnIndexString = request.queryParams("columnIndex");
     Map<String, Object> responseMap = new HashMap<>();
 
+    if (toSearch == null) {
+      return new SearchCSVFailureResponse("Please enter term to search for");
+    }
+
     if (this.loadCSVHandler.isLoaded()) {
       CSVParser<List<String>> csvParser =
-          this.loadCSVHandler.getCSVParser(); // Add null checks / error handling
+          this.loadCSVHandler.getCSVParser();
       Search search = new Search(csvParser);
 
       if (columnIndexString != null) {
@@ -52,7 +57,6 @@ public class SearchCSVHandler implements Route {
       }
 
       if (headerName != null) {
-
         try {
           responseMap.put("Matching rows", search.searchCSV(toSearch, headerName));
         } catch (NoSuchElementException e) {
@@ -74,6 +78,7 @@ public class SearchCSVHandler implements Route {
   }
 
   public record SearchCSVSuccessResponse(String responseType, Map<String, Object> responseMap) {
+
     public SearchCSVSuccessResponse(Map<String, Object> responseMap) {
       this("Success", responseMap);
     }
@@ -87,6 +92,7 @@ public class SearchCSVHandler implements Route {
   }
 
   public record SearchCSVFailureResponse(String responseType, String errorDescription) {
+
     public SearchCSVFailureResponse(String errorDescription) {
       this("Error", errorDescription);
     }
