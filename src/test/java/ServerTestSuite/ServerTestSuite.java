@@ -1,6 +1,6 @@
 package ServerTestSuite;
 
-import edu.brown.cs.student.main.Server.LoadCSVHandler;
+import edu.brown.cs.student.main.Server.CSV.LoadCSVHandler;
 import edu.brown.cs.student.main.Server.Server;
 import org.eclipse.jetty.http.MetaData;
 import org.junit.jupiter.api.AfterAll;
