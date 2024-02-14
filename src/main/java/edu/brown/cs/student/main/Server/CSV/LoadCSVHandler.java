@@ -22,7 +22,6 @@ public class LoadCSVHandler implements Route {
 
   public LoadCSVHandler() {
     this.isLoaded = false;
-    //    this.message = "";
   }
 
   @Override
@@ -63,7 +62,10 @@ public class LoadCSVHandler implements Route {
           + "Please ensure all rows contain the same number of columns.");
     }
 
+<<<<<<< HEAD:src/main/java/edu/brown/cs/student/main/Server/CSV/LoadCSVHandler.java
     return new LoadCSVSuccessResponse().serialize();
+=======
+>>>>>>> 534facd93f855dcd178d4c0ae405e923dc058d84:src/main/java/edu/brown/cs/student/main/Server/LoadCSVHandler.java
   }
 
   public record LoadCSVSuccessResponse(String responseType) {
