@@ -11,24 +11,19 @@ import spark.Response;
 import spark.Route;
 
 public class ViewCSVHandler implements Route {
-  private final LoadCSVHandler loadCSVHandler;
+  private CSVDataSource dataSource;
 
-  public ViewCSVHandler(LoadCSVHandler loadCSVHandler) {
-    this.loadCSVHandler = loadCSVHandler;
+  public ViewCSVHandler(CSVDataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override
   public Object handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();
 
-    if (this.loadCSVHandler.isLoaded()) {
-      CSVParser<List<String>> csvParser = this.loadCSVHandler.getCSVParser();
-      if (csvParser.getHeaderList() != null) {
-        responseMap.put("Headers", csvParser.getHeaderList());
-      }
-      responseMap.put("Data", csvParser.getCSVContents());
-
-      return new ViewCSVSuccessResponse(responseMap).serialize();
+    if (this.dataSource.isLoaded()) {
+      responseMap.put("Data:", this.dataSource.viewCSV());
+      return new ViewCSVSuccessResponse(responseMap);
     } else {
       return new ViewCSVFailureResponse().serialize();
     }

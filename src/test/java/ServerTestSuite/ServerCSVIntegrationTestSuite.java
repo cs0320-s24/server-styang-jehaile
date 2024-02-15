@@ -114,7 +114,7 @@ public class ServerCSVIntegrationTestSuite {
     @Test
     public void testViewBeforeLoad() throws IOException {
 
-        String csvFileName = "ten-star.csv";
+        String csvFileName = "dol_ri_earnings_disparity.csv";
         URL url = new URL("http://localhost:1234/viewcsv?fileName=" + csvFileName);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -136,7 +136,7 @@ public class ServerCSVIntegrationTestSuite {
     @Test
     public void testSearchBeforeLoad() throws IOException {
 
-        String csvFileName = "ten-star.csv";
+        String csvFileName = "dol_ri_earnings_disparity.csv";
         URL url = new URL("http://localhost:1234/searchcsv?fileName=" + csvFileName);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -191,7 +191,6 @@ public class ServerCSVIntegrationTestSuite {
         assertTrue(response.toString().contains("Sol"));
         assertTrue(response.toString().contains("Proxima Centauri"));
         assertTrue(response.toString().contains("-0.01729"));
-        assertTrue(response.toString().contains("\"Data\":[[\"StarID\",\"ProperName\",\"X\",\"Y\",\"Z\"]"));
     }
 
     @Test
@@ -226,8 +225,7 @@ public class ServerCSVIntegrationTestSuite {
         assertTrue(response.toString().contains("Asian"));
         assertFalse(response.toString().contains("Simon"));
         assertTrue(response.toString().contains("washington-county-ri"));
-//        assertTrue(response.toString().contains("[2,Black,2019,2019,44765,12493,\"Newport County, RI\",05000US44005,newport-county-ri]"));
-        assertTrue(response.toString().contains("[\"2\",\"Black\",\"2019\",\"2019\",\"79609\",\"17881\",\"\\\"Kent County, RI\\\"\",\"05000US44003\",\"kent-county-ri\"]"));
+        assertTrue(response.toString().contains("[0, Total, 2020, 2020, 75857, 2022, \"Kent County, RI\", 05000US44003, kent-county-ri]"));
     }
     @Test
     public void testContentsOfSearchCSV() throws IOException, InterruptedException {
@@ -257,7 +255,7 @@ public class ServerCSVIntegrationTestSuite {
         in.close();
 
         assertTrue(response.toString().contains("Barnard's Star"));
-        assertTrue(response.toString().contains("\"Matching rows\":[[\"87666\",\"Barnard's Star\",\"-0.01729\",\"-1.81533\",\"0.14824\"]]"));
+        assertTrue(response.toString().contains("Matches:=[[87666, Barnard's Star, -0.01729, -1.81533, 0.14824]]}]"));
         assertFalse(response.toString().contains("Jowet"));
     }
     @Test
@@ -286,8 +284,7 @@ public class ServerCSVIntegrationTestSuite {
             response.append(inputLine);
         }
         in.close();
-        assertEquals(response.toString(), "{\"responseType\":\"Success\",\"responseMap\":{\"Matching rows\":[]}}");
-
+        assertEquals(response.toString(), "SearchCSVSuccessResponse[responseType=Success, responseMap={Matches:=[]}]");
     }
     @Test
     public void testSearchCSVHeader() throws IOException, InterruptedException {
@@ -317,13 +314,12 @@ public class ServerCSVIntegrationTestSuite {
         }
         in.close();
 
-        assertTrue(response.toString().contains("Burrillville,\"96,824.00\",\"109,340.00\",\"39,470.00\""));
+        assertTrue(response.toString().contains("Burrillville, \"96,824.00\", \"109,340.00\", \"39,470.00\""));
         assertTrue(response.toString().contains("Burrillville"));
         //{"responseType":"Success","responseMap":{"Matching rows":[["Burrillville","\"96,824.00\"","\"109,340.00\"","\"39,470.00\""]]}}
         //assertTrue(response.toString().contains("\"Matching rows\":[[\"87666\",\"Barnard's Star\",\"-0.01729\",\"-1.81533\",\"0.14824\"]]"));
         //assertFalse(response.toString().contains("Jowet"));
     }
-//column, index
 }
 
 

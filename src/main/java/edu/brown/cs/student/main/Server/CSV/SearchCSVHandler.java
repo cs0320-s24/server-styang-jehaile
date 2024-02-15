@@ -14,10 +14,10 @@ import spark.Route;
 
 public class SearchCSVHandler implements Route {
 
-  private final LoadCSVHandler loadCSVHandler;
+  private final CSVDataSource dataSource;
 
-  public SearchCSVHandler(LoadCSVHandler loadCSVHandler) {
-    this.loadCSVHandler = loadCSVHandler;
+  public SearchCSVHandler(CSVDataSource csvDataSource) {
+    this.dataSource = csvDataSource;
   }
 
   @Override
@@ -27,50 +27,22 @@ public class SearchCSVHandler implements Route {
     String columnIndexString = request.queryParams("columnIndex");
     Map<String, Object> responseMap = new HashMap<>();
 
-    if (toSearch == null) {
-      return new SearchCSVFailureResponse("Please enter term to search for");
-    }
 
-    if (this.loadCSVHandler.isLoaded()) {
-      CSVParser<List<String>> csvParser =
-          this.loadCSVHandler.getCSVParser();
-      Search search = new Search(csvParser);
-
-      if (columnIndexString != null) {
-        int columnIndex;
-
-        try {
-          columnIndex = Integer.parseInt(columnIndexString);
-        } catch (IllegalArgumentException e) {
-          return new SearchCSVFailureResponse(
-              "Index not entered as integer."); // specify failure (index not entered as number)
-        }
-
-        try {
-          responseMap.put("Matching rows", search.searchCSV(toSearch, columnIndex));
-        } catch (IndexOutOfBoundsException e) {
-          return new SearchCSVFailureResponse(
-              "Column does not exist."); // specify failure (index doesn't exist / less than 0.)
-        }
-
-        return new SearchCSVSuccessResponse(responseMap).serialize();
+    if (this.dataSource.isLoaded()) {
+      if (toSearch == null) {
+        return new SearchCSVFailureResponse("Please enter term to search for");
       }
-
-      if (headerName != null) {
-        try {
-          System.out.print("entering try for headerName");
-          responseMap.put("Matching rows", search.searchCSV(toSearch, headerName));
-        } catch (NoSuchElementException e) {
-          return new SearchCSVFailureResponse(
-              "Header does not exist."); // specify failure (header doesn't exist)
-        }
-
-        return new SearchCSVSuccessResponse(responseMap).serialize();
+      try {
+        List<List<String>> matches = this.dataSource.searchCSV(toSearch, headerName, columnIndexString);
+        responseMap.put("Matches:", matches);
+        return new SearchCSVSuccessResponse(responseMap);
+      } catch (NoSuchElementException e) {
+        return new SearchCSVFailureResponse("Column does not exist.");
+      } catch (IndexOutOfBoundsException e) {
+        return new SearchCSVFailureResponse("Inputted index is out of bounds");
+      } catch (IllegalArgumentException e) {
+        return new SearchCSVFailureResponse("Column index inputted in incorrect format");
       }
-
-      responseMap.put("Matching rows", search.searchCSV(toSearch));
-
-      return new SearchCSVSuccessResponse(responseMap).serialize();
 
     } else {
       return new SearchCSVFailureResponse("CSV File not loaded.")

@@ -5,6 +5,7 @@ import static spark.Spark.after;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandDataSource;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandHandler;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.CachingBroadbandDataSource;
+import edu.brown.cs.student.main.Server.CSV.CSVDataSource;
 import edu.brown.cs.student.main.Server.CSV.LoadCSVHandler;
 import edu.brown.cs.student.main.Server.CSV.SearchCSVHandler;
 import edu.brown.cs.student.main.Server.CSV.ViewCSVHandler;
@@ -36,10 +37,10 @@ public class Server {
         });
 
     // Setting up the handler for the GET /order and /activity endpoints
-    LoadCSVHandler loadCSVHandler = new LoadCSVHandler();
-    Spark.get("loadcsv", loadCSVHandler);
-    Spark.get("viewcsv", new ViewCSVHandler(loadCSVHandler));
-    Spark.get("searchcsv", new SearchCSVHandler(loadCSVHandler));
+    CSVDataSource csvDataSource = new CSVDataSource();
+    Spark.get("loadcsv", new LoadCSVHandler(csvDataSource));
+    Spark.get("viewcsv", new ViewCSVHandler(csvDataSource));
+    Spark.get("searchcsv", new SearchCSVHandler(csvDataSource));
     Spark.get("broadband", new BroadbandHandler(new CachingBroadbandDataSource(new BroadbandDataSource())));
     Spark.init();
     Spark.awaitInitialization();
