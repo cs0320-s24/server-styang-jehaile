@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class BroadbandAPIUtilities {
 
   public static BroadbandData deserializeBroadbandData(String jsonBroadbandData)
