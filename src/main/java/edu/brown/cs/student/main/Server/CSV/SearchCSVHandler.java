@@ -58,6 +58,7 @@ public class SearchCSVHandler implements Route {
 
       if (headerName != null) {
         try {
+          System.out.print("entering try for headerName");
           responseMap.put("Matching rows", search.searchCSV(toSearch, headerName));
         } catch (NoSuchElementException e) {
           return new SearchCSVFailureResponse(
