@@ -50,14 +50,14 @@ public class BroadbandHandler implements Route {
 
     responseMap.put("Broadband data:", broadbandData);
 
-    return new BroadbandSuccessResponse(responseMap).serialize();
+    return new BroadbandSuccessResponse(broadbandData).serialize();
 }
 
 public record BroadbandSuccessResponse(
-    String responseType, String dateTime, Map<String, BroadbandData> responseMap) {
+    String responseType, String dateTime, BroadbandData responseData) {
 
-  public BroadbandSuccessResponse(Map<String, BroadbandData> responseMap) {
-    this("Loaded successfully! :)", LocalDateTime.now().toString(), responseMap);
+  public BroadbandSuccessResponse(BroadbandData responseData) {
+    this("Loaded successfully! :)", LocalDateTime.now().toString(), responseData);
   }
 
   String serialize() {
