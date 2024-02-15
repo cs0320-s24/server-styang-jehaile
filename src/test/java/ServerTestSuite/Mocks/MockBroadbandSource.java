@@ -1,4 +1,4 @@
-package ServerTestSuite;
+package ServerTestSuite.Mocks;
 
 import edu.brown.cs.student.main.Server.Broadband.BroadbandData;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandDataSourceInterface;
