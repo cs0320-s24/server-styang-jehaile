@@ -67,7 +67,7 @@ public class Search {
   public List<List<String>> searchCSV(String toSearch, String header)
       throws NoSuchElementException {
     header = header.toUpperCase();
-    if (this.csvParser.getHeaderList() == null || this.csvParser.getHeaderList().contains(header)) {
+    if (this.csvParser.getHeaderList() != null && this.csvParser.getHeaderList().contains(header)) {
       int index = this.csvParser.getHeaderList().indexOf(header);
       return this.searchCSV(toSearch, index);
     } else {
