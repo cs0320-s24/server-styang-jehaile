@@ -2,7 +2,7 @@ package ServerTestSuite;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import ServerTestSuite.Mocks.MockBroadbandSource;
+//import ServerTestSuite.Mocks.MockBroadbandSource;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandData;
@@ -30,19 +30,19 @@ public class ServerBroadbandIntegrationTest {
   private JsonAdapter<Map<String, Object>> adapter;
   private JsonAdapter<BroadbandData> broadbandDataAdapter;
 
-  @BeforeEach
-  public void setup() {
-    // Re-initialize parser, state, etc. for every test method
-
-    // Use *MOCKED* data when in this test environment.
-    BroadbandDataSourceInterface mockedSource = new MockBroadbandSource(new BroadbandData("california", "orange", 90.3));
-    Spark.get("/broadband", new BroadbandHandler(new CachingBroadbandDataSource(mockedSource)));
-    Spark.awaitInitialization(); // don't continue until the server is listening
-
-    Moshi moshi = new Moshi.Builder().build();
-    adapter = moshi.adapter(mapStringObject);
-    broadbandDataAdapter = moshi.adapter(BroadbandData.class);
-  }
+//  @BeforeEach
+//  public void setup() {
+//    // Re-initialize parser, state, etc. for every test method
+//
+//    // Use *MOCKED* data when in this test environment.
+//    BroadbandDataSourceInterface mockedSource = new MockBroadbandSource(new BroadbandData("california", "orange", 90.3));
+//    Spark.get("/broadband", new BroadbandHandler(new CachingBroadbandDataSource(mockedSource)));
+//    Spark.awaitInitialization(); // don't continue until the server is listening
+//
+//    Moshi moshi = new Moshi.Builder().build();
+//    adapter = moshi.adapter(mapStringObject);
+//    broadbandDataAdapter = moshi.adapter(BroadbandData.class);
+//  }
 
   @AfterEach
   public void tearDown() {

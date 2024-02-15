@@ -320,6 +320,40 @@ public class ServerCSVIntegrationTestSuite {
         //assertTrue(response.toString().contains("\"Matching rows\":[[\"87666\",\"Barnard's Star\",\"-0.01729\",\"-1.81533\",\"0.14824\"]]"));
         //assertFalse(response.toString().contains("Jowet"));
     }
+    @Test
+    public void testSearchCSVColumnIndex() throws IOException, InterruptedException {
+        String csvFileName = "ri_city_and_town_income.csv";
+
+        URL loadUrl = new URL("http://localhost:1234/loadcsv?fileName=" + csvFileName);
+        HttpURLConnection loadConnection = (HttpURLConnection) loadUrl.openConnection();
+        loadConnection.setRequestMethod("GET");
+        assertEquals(200, loadConnection.getResponseCode());
+
+        Thread.sleep(3000);
+        String value = "114,202.00"; //"\"\\\"109,340.00\\\"\"";
+        String index = "2";
+
+        URL viewUrl = new URL("http://localhost:1234/searchcsv?fileName=" + csvFileName  + "&toSearch=" + value + "&columnIndex" + index );
+        HttpURLConnection viewConnection = (HttpURLConnection) viewUrl.openConnection();
+        viewConnection.setRequestMethod("GET");
+
+        int responseCode = viewConnection.getResponseCode();
+        assertEquals(200, responseCode);
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(viewConnection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        assertTrue(response.toString().contains("114,202.00"));
+        assertTrue(response.toString().contains("responseMap={Matches:=[[South Kingstown, \"102,242.00\", \"114,202.00\", \"42,080.00\"]]}"));
+        /*
+        TODO: check for column number that does not exist
+         */
+
+    }
 }
 
 

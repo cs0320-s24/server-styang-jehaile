@@ -13,11 +13,20 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * This is our CSV data source class which is passed into our loadcsv, searchcsv, viewcsv handlers to extract the
+ * data from the files. This ensures that all the files must be loaded prior to being searched or viewed by utilizing a
+ * boolean value.
+ */
+
 public class CSVDataSource {
 
   private CSVParser<List<String>> csvParser;
   private boolean isLoaded;
 
+  /**
+   *
+   */
   public CSVDataSource() {
     this.isLoaded = false;
   }
@@ -41,14 +50,17 @@ public class CSVDataSource {
 
   public List<List<String>> searchCSV(String toSearch, String headerName, String columnIndex) throws IndexOutOfBoundsException, NoSuchElementException, IllegalArgumentException {
     Search search = new Search(this.csvParser);
+    int columnIndexInt;
 
     if (columnIndex != null) {
       try {
-        int columnIndexInt = Integer.parseInt(columnIndex);
+        columnIndexInt = Integer.parseInt(columnIndex);
       } catch (NumberFormatException e) {
         throw new IllegalArgumentException();
       }
-      return search.searchCSV(toSearch, columnIndex);
+//      return search.searchCSV(toSearch, columnIndex);
+      return search.searchCSV(toSearch, columnIndexInt);
+
     }
 
     if (headerName != null) {
