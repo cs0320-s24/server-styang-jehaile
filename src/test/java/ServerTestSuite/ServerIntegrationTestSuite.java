@@ -1,19 +1,14 @@
 package ServerTestSuite;
 
-import edu.brown.cs.student.main.Server.CSV.LoadCSVHandler;
 import edu.brown.cs.student.main.Server.Server;
-import org.eclipse.jetty.http.MetaData;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import spark.Request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 
@@ -21,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class ServerTestSuite {
+public class ServerIntegrationTestSuite {
   // Write a test class that starts up your server locally, sends it web requests, and evaluates the
   // response.
   // (This will all be done on your local computer; no internet connection needed.)
