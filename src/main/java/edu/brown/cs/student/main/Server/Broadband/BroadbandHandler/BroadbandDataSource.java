@@ -23,7 +23,7 @@ public class BroadbandDataSource implements BroadbandDataSourceInterface{
       HttpResponse<String> stateToCode = BroadbandAPIUtilities.getAPIResponse(
           "https://api.census.gov/data/2010/dec/sf1?get=NAME&for=state:*");
       this.stateToCode = BroadbandAPIUtilities.deserializeStateMap(stateToCode);
-    } catch (IOException | URISyntaxException | InterruptedException e) {
+    } catch (IOException | URISyntaxException | InterruptedException | IllegalStateException e) {
       // Set map to null so that code remains functional, throw error once endpoint is
       // actually queried
       this.stateToCode = null;
@@ -50,7 +50,7 @@ public class BroadbandDataSource implements BroadbandDataSourceInterface{
       throw new IllegalStateException();
     }
 
-    if (!this.stateToCode.containsKey(state)) {
+    if (!this.stateToCode.containsKey(state) || county.isEmpty()) {
       throw new NoSuchElementException();
     }
 

@@ -138,4 +138,64 @@ public class ServerBroadbandIntegrationTest {
 
     loadConnection.disconnect();
   }
+
+  @Test
+  public void testBroadbandRequestEmptyState() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband?state=&county=dekalb");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Error", responseBody.get("responseType"));
+
+    assertEquals(
+        "County and/or state does not exist. Please"
+            + " ensure that state is exists and that only the county name is inputted"
+            + " (e.g., \"orange\" for \"Orange County, California\").",
+        responseBody.get("errorDescription"));
+
+    loadConnection.disconnect();
+  }
+
+  @Test
+  public void testBroadbandRequestEmptyCounty() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband?state=california&county=");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Error", responseBody.get("responseType"));
+
+    assertEquals(
+        "County and/or state does not exist. Please"
+            + " ensure that state is exists and that only the county name is inputted"
+            + " (e.g., \"orange\" for \"Orange County, California\").",
+        responseBody.get("errorDescription"));
+
+    loadConnection.disconnect();
+  }
+
+  @Test
+  public void testBroadbandRequestEmptyCountyEmptyState() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband?state=&county=");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Error", responseBody.get("responseType"));
+
+    assertEquals(
+        "County and/or state does not exist. Please"
+            + " ensure that state is exists and that only the county name is inputted"
+            + " (e.g., \"orange\" for \"Orange County, California\").",
+        responseBody.get("errorDescription"));
+
+    loadConnection.disconnect();
+  }
 }
