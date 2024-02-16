@@ -169,8 +169,6 @@ public class ServerBroadbandIntegrationTest {
     // Get the expected response: a success
     Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
     assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
-
-    LocalDateTime firstCallTime = LocalDateTime.now();
     // Round time to several milliseconds
     assertEquals(
         firstCallTime.toString().substring(0, 18),
