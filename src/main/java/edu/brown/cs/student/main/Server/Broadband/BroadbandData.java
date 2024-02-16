@@ -1,9 +1,11 @@
 package edu.brown.cs.student.main.Server.Broadband;
 
-public record BroadbandData(String state, String county, double percentAccess) {
+import java.time.LocalDateTime;
+
+public record BroadbandData(LocalDateTime time, String state, String county, double percentAccess) {
 
   @Override
   public String toString() {
-    return "{state=" + state + ", county=" + county + ", percentAccess=" + percentAccess + "}";
+    return "{LocalDateTime=" + time + ", state=" + state + ", county=" + county + ", percentAccess=" + percentAccess + "}";
   }
 }

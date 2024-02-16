@@ -54,10 +54,10 @@ public class BroadbandHandler implements Route {
 }
 
 public record BroadbandSuccessResponse(
-    String responseType, String dateTime, BroadbandData responseData) {
+    String responseType, BroadbandData responseData) {
 
   public BroadbandSuccessResponse(BroadbandData responseData) {
-    this("Loaded successfully! :)", LocalDateTime.now().toString(), responseData);
+    this("Loaded successfully! :)",  responseData);
   }
 
   String serialize() {

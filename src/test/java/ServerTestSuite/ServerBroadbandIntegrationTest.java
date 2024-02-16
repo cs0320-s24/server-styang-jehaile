@@ -14,11 +14,13 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Map;
 import okio.Buffer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.Assert;
 import spark.Spark;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -35,7 +37,7 @@ public class ServerBroadbandIntegrationTest {
     // Re-initialize parser, state, etc. for every test method
 
     // Use *MOCKED* data when in this test environment.
-    BroadbandDataSourceInterface mockedSource = new MockBroadbandSource(new BroadbandData("california", "orange", 90.3));
+    BroadbandDataSourceInterface mockedSource = new MockBroadbandSource(new BroadbandData(LocalDateTime.of(2024, 2,15, 12, 13, 10), "california", "orange", 90.3));
     Spark.get("/broadband", new BroadbandHandler(new CachingBroadbandDataSource(mockedSource)));
     Spark.awaitInitialization(); // don't continue until the server is listening
 
@@ -75,12 +77,130 @@ public class ServerBroadbandIntegrationTest {
     Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
     assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
 
-    // Mocked data: correct temp? We know what it is, because we mocked.
     assertEquals(
-        new BroadbandData("california", "orange", 90.3).toString(),
+        new BroadbandData(LocalDateTime.of(2024, 2,15, 12, 13, 10), "california", "orange", 90.3).toString(),
         responseBody.get("responseData").toString());
     // Notice we had to do something strange above, because the map is
     // from String to *Object*. Awkward testing caused by poor API design...
+
+    loadConnection.disconnect();
+  }
+
+  @Test
+  public void testBroadbandRequestFailureNoState() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband?county=orange");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Error", responseBody.get("responseType"));
+
+    assertEquals(
+        "Missing required query parameter: input state and county.",
+        responseBody.get("errorDescription"));
+
+    loadConnection.disconnect();
+  }
+
+  @Test
+  public void testBroadbandRequestFailureNoCounty() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband?state=california");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Error", responseBody.get("responseType"));
+
+    assertEquals(
+        "Missing required query parameter: input state and county.",
+        responseBody.get("errorDescription"));
+
+    loadConnection.disconnect();
+  }
+
+  @Test
+  public void testBroadbandRequestFailureNoCountyNoState() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Error", responseBody.get("responseType"));
+
+    assertEquals(
+        "Missing required query parameter: input state and county.",
+        responseBody.get("errorDescription"));
+
+    loadConnection.disconnect();
+  }
+
+//  @Test
+//  public void testBroadbandRequestDateTime() throws IOException {
+//    /////////// LOAD DATASOURCE ///////////
+//    // Set up the request, make the request
+//    HttpURLConnection loadConnection = tryRequest("broadband?state=california&county=orange");
+//    // Get an OK response (the *connection* worked, the *API* provides an error response)
+//    assertEquals(200, loadConnection.getResponseCode());
+//    // Get the expected response: a success
+//    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+//    assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
+//
+//    // Round time to several milliseconds
+//    assertEquals(
+//        LocalDateTime.now().toString().substring(0, 18),
+//        responseBody.get("dateTime").toString().substring(0, 18));
+//
+//    loadConnection.disconnect();
+//  }
+
+  @Test
+  public void testCachingFunctionality() throws IOException {
+    /////////// LOAD DATASOURCE ///////////
+    // Set up the request, make the request
+    HttpURLConnection loadConnection = tryRequest("broadband?state=california&county=orange");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnection.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
+    assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
+
+    LocalDateTime firstCallTime = LocalDateTime.now();
+    // Round time to several milliseconds
+    assertEquals(
+        firstCallTime.toString().substring(0, 18),
+        responseBody.get("dateTime").toString().substring(0, 18));
+
+    assertEquals(
+        new BroadbandData("california", "orange", 90.3).toString(),
+        responseBody.get("responseData").toString());
+
+    // Set up second request, make the request
+    HttpURLConnection loadConnectionAgain = tryRequest("broadband?state=california&county=orange");
+    // Get an OK response (the *connection* worked, the *API* provides an error response)
+    assertEquals(200, loadConnectionAgain.getResponseCode());
+    // Get the expected response: a success
+    Map<String, Object> responseBodyAgain = adapter.fromJson(new Buffer().readFrom(loadConnectionAgain.getInputStream()));
+    assertEquals("Loaded successfully! :)", responseBodyAgain.get("responseType"));
+
+    // Check that it was received previously
+    assertEquals(
+        firstCallTime.toString().substring(0, 18),
+        responseBodyAgain.get("dateTime").toString().substring(0, 18));
+
+    Assert.assertNotEquals(
+        LocalDateTime.now().toString().substring(0, 18),
+        responseBodyAgain.get("dateTime").toString().substring(0, 18)
+    );
+
+    assertEquals(
+        new BroadbandData("california", "orange", 90.3).toString(),
+        responseBodyAgain.get("responseData").toString());
 
     loadConnection.disconnect();
   }
