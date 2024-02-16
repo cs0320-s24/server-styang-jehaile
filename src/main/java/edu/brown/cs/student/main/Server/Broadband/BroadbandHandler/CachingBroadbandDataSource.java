@@ -29,9 +29,9 @@ public class CachingBroadbandDataSource implements BroadbandDataSourceInterface 
     this.cache =
         CacheBuilder.newBuilder()
             // How many entries maximum in the cache?
-            .maximumSize(1)
+            .maximumSize(2)
             // How long should entries remain in the cache?
-            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .expireAfterWrite(1000, TimeUnit.MILLISECONDS)
             // Keep statistical info around for profiling purposes
             .recordStats()
             .build(
