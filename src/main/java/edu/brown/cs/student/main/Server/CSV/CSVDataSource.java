@@ -37,14 +37,14 @@ public class CSVDataSource {
    * the CSV parser whether here are headers present. This method reads the data, creates a strategy object which handles strings, then passes
    * these values into our CSV parser which parses the data. Lastly the boolean is set to true indicating that the
    * file was loaded. This method throws exceptions which are caught in the loadcsv handler class.
-   * @param fileName
-   * @param headers
-   * @throws IOException
-   * @throws MalformedRowsException
-   * @throws FactoryFailureException
+   * @param fileName String representing the file name the user whats to load
+   * @param headers Boolean representing whether there are headers present
+   * @throws IOException thrown if there are errors reading the file
+   * @throws MalformedRowsException thrown if the csv file has malformed data
+   * @throws FactoryFailureException thrown if there are errors parsing the file through our csv parser
    */
   public void loadCSVData(String fileName, boolean headers)
-      throws IOException, MalformedRowsException, FactoryFailureException {
+      throws IOException, MalformedRowsException, FactoryFailureException{
     String folderPath = "data";
     Path absoluteFolderPath = Paths.get(folderPath).toAbsolutePath();
     Path csvPath =
@@ -68,13 +68,13 @@ public class CSVDataSource {
    * a try catch which catches illegal arguments. We then use the search class to search the csv for the row containing
    * the value and return it. The exceptions thrown in this methodl is caught in the SearchCSVHandler class
    * where we call this method.
-   * @param toSearch
-   * @param headerName
-   * @param columnIndex
-   * @return
-   * @throws IndexOutOfBoundsException
-   * @throws NoSuchElementException
-   * @throws IllegalArgumentException
+   * @param toSearch String representing the value to search for in the data
+   * @param headerName String representing the header name the user can choose to search for a value through
+   * @param columnIndex String representing the column index the user can choose to search through
+   * @return Returns a list of list of strings of the rows in the CSV that contains the searched result
+   * @throws IndexOutOfBoundsException thrown if searching for a column  index beyond the limits of the csv file
+   * @throws NoSuchElementException thrown if searching for an element that does not exist
+   * @throws IllegalArgumentException thrown if the argument type is invalid
    */
 
   public List<List<String>> searchCSV(String toSearch, String headerName, String columnIndex) throws IndexOutOfBoundsException, NoSuchElementException, IllegalArgumentException {
@@ -100,7 +100,7 @@ public class CSVDataSource {
    * This method returns the contents of a csv file after it is parsed as a list of lists of strings and adds
    * the list of headers, if they are present in a data set to the start of what will become the json. This
    * method is called in the viewcsvhandler class.
-   * @return
+   * @return Represents the return which is a list of list of strings of the data in the csv file
    */
 
   public List<List<String>> viewCSV() {
@@ -115,7 +115,7 @@ public class CSVDataSource {
   /**
    * This method is called in our viewcsvhandler class and returns the boolean created in this class which
    * states the status of whether data is loaded.
-   * @return
+   * @return a Boolean value indicating whether a file is loaded.
    */
   public boolean isLoaded() {
     return this.isLoaded;

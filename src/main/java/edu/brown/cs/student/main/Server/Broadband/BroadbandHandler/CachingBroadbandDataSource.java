@@ -22,21 +22,16 @@ public class CachingBroadbandDataSource implements BroadbandDataSourceInterface 
      * access to the broadband data getter in the interface. The constructor uses an instance of the guava loading cache class
      * to create the cacher, we set the max size to 6 entries, that last for 10 minutes and use the cache loader
      * to load the cache by taking in the request key which would be the state and county from the getter.
-     * @param toWrap
+     * @param toWrap represents an instance of the broadband data source interface to get the data
      */
   public CachingBroadbandDataSource(BroadbandDataSourceInterface toWrap) {
 
     this.cache =
         CacheBuilder.newBuilder()
-            // How many entries maximum in the cache?
             .maximumSize(1)
-            // How long should entries remain in the cache?
             .expireAfterWrite(10, TimeUnit.MINUTES)
-            // Keep statistical info around for profiling purposes
             .recordStats()
             .build(
-                // Strategy pattern: how should the cache behave when it's asked for something it
-                // doesn't have?
                 new CacheLoader<>() {
                   @Override
                   public BroadbandData load(String requestKey) throws Exception {
@@ -51,9 +46,9 @@ public class CachingBroadbandDataSource implements BroadbandDataSourceInterface 
      * the state and county take as the request string which is passed into getunchecked which retrieves the value associated with
      * the key from the cache or loads it if it is not present in the cache.
      *
-     * @param state
-     * @param county
-     * @return
+     * @param state String representing state being queried.
+     * @param county String representing the county being queried
+     * @return the broadband data to the cache to be stored
      */
   @Override
   public BroadbandData getBroadbandData(String state, String county) {
