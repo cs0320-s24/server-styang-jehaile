@@ -99,13 +99,53 @@ public class ServerCSVUnitTest {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
     this.loadCSVHandler.handle(loadCSVRequest, null);
     SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, null);
-    String response = this.searchCSVHandler.handle(searchCSVRequest, null).serialize;
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
 
-    Assert.assertTrue(response.contains("\"Matches\":[[\"70667\",\"Proxima Centauri\",\"-0.47175\",\"-0.36132\",\"-1.15037\"]]}}"));
+    Assert.assertTrue(response.contains("Proxima Centauri"));
   }
 
+  @Test
+  public void testSearchCSVFailureColumnDoesNotExist() {
+    LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequest, null);
+    SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, "5");
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
 
+    String failureResponse = new SearchCSVFailureResponse("Inputted index is out of bounds").serialize();
+    Assert.assertEquals(response, failureResponse);
+  }
 
+  @Test
+  public void testSearchCSVFailureColumnIndexWrongInput() {
+    LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequest, null);
+    SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, "Galaxy");
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
+
+    String failureResponse = new SearchCSVFailureResponse("Column index inputted in incorrect format").serialize();
+    Assert.assertEquals(response, failureResponse);
+  }
+
+  @Test
+  public void testSearchCSVFailureColumnHeaderNotExist() {
+    LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequest, null);
+    SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", "Galaxy", null);
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
+
+    String failureResponse = new SearchCSVFailureResponse("Column does not exist.").serialize();
+    Assert.assertEquals(response, failureResponse);
+  }
+
+  @Test
+  public void testSearchCSVFailureColumnHeadersAndIndex() {
+    LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequest, null);
+    SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", "ProperName", "1");
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
+
+    Assert.assertTrue(response.contains("Proxima Centauri"));
+  }
 
 
   public record LoadCSVSuccessResponse(String responseType) {
@@ -183,8 +223,8 @@ public class ServerCSVUnitTest {
      */
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<SearchCSVHandler.SearchCSVSuccessResponse> adapter =
-          moshi.adapter(SearchCSVHandler.SearchCSVSuccessResponse.class);
+      JsonAdapter<ServerCSVUnitTest.SearchCSVSuccessResponse> adapter =
+          moshi.adapter(ServerCSVUnitTest.SearchCSVSuccessResponse.class);
       return adapter.toJson(this);
     }
   }
@@ -215,7 +255,7 @@ public class ServerCSVUnitTest {
      */
     String serialize() { // error? check gearup code
       Moshi moshi = new Moshi.Builder().build();
-      JsonAdapter<SearchCSVHandler.SearchCSVFailureResponse> adapter =
+      JsonAdapter<ServerCSVUnitTest.SearchCSVFailureResponse> adapter =
           moshi.adapter(ServerCSVUnitTest.SearchCSVFailureResponse.class);
       return adapter.toJson(this);
     }

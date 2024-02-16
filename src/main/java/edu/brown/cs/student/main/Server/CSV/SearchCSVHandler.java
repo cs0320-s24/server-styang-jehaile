@@ -51,7 +51,7 @@ public class SearchCSVHandler implements Route {
    *     string
    */
   @Override
-  public Object handle(Request request, Response response) {
+  public String handle(Request request, Response response) {
     String toSearch = request.queryParams("toSearch");
     String headerName = request.queryParams("headerName");
     String columnIndexString = request.queryParams("columnIndex");
@@ -59,7 +59,7 @@ public class SearchCSVHandler implements Route {
 
     if (this.dataSource.isLoaded()) {
       if (toSearch == null) {
-        return new SearchCSVFailureResponse("Please enter term to search for");
+        return new SearchCSVFailureResponse("Please enter term to search for").serialize();
       }
       try {
         List<List<String>> matches =
@@ -67,11 +67,11 @@ public class SearchCSVHandler implements Route {
         responseMap.put("Matches:", matches);
         return new SearchCSVSuccessResponse(responseMap).serialize();
       } catch (NoSuchElementException e) {
-        return new SearchCSVFailureResponse("Column does not exist.");
+        return new SearchCSVFailureResponse("Column does not exist.").serialize();
       } catch (IndexOutOfBoundsException e) {
-        return new SearchCSVFailureResponse("Inputted index is out of bounds");
+        return new SearchCSVFailureResponse("Inputted index is out of bounds").serialize();
       } catch (IllegalArgumentException e) {
-        return new SearchCSVFailureResponse("Column index inputted in incorrect format");
+        return new SearchCSVFailureResponse("Column index inputted in incorrect format").serialize();
       }
 
     } else {
