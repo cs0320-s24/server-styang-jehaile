@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import spark.Spark;
 
 public class ServerBroadbandIntegrationTest {
+
   private final Type mapStringObject =
       Types.newParameterizedType(Map.class, String.class, Object.class);
   private JsonAdapter<Map<String, Object>> adapter;
@@ -76,10 +77,10 @@ public class ServerBroadbandIntegrationTest {
 
     assertEquals(
         new BroadbandData(
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
-                "california",
-                "orange",
-                90.3)
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
+            "california",
+            "orange",
+            90.3)
             .toString(),
         responseBody.get("responseData").toString());
     // Notice we had to do something strange above, because the map is

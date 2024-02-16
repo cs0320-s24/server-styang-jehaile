@@ -8,7 +8,6 @@ import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.Server.CSV.CSVDataSource;
 import edu.brown.cs.student.main.Server.CSV.LoadCSVHandler;
 import edu.brown.cs.student.main.Server.CSV.SearchCSVHandler;
-import edu.brown.cs.student.main.Server.CSV.SearchCSVHandler.SearchCSVSuccessResponse;
 import edu.brown.cs.student.main.Server.CSV.ViewCSVHandler;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.testng.Assert;
 
 
-
 public class ServerCSVUnitTest {
+
   private CSVDataSource csvDataSource;
   private LoadCSVHandler loadCSVHandler;
   private ViewCSVHandler viewCSVHandler;
@@ -55,7 +54,8 @@ public class ServerCSVUnitTest {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest(null, "true");
     Object response = this.loadCSVHandler.handle(loadCSVRequest, null);
 
-    String failureResponse = new LoadCSVFailureResponse("Please enter headers and fileName parameters.").serialize();
+    String failureResponse = new LoadCSVFailureResponse(
+        "Please enter headers and fileName parameters.").serialize();
     Assert.assertEquals(response, failureResponse);
   }
 
@@ -73,7 +73,8 @@ public class ServerCSVUnitTest {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", null);
     Object response = this.loadCSVHandler.handle(loadCSVRequest, null);
 
-    String failureResponse = new LoadCSVFailureResponse("Please enter headers and fileName parameters.").serialize();
+    String failureResponse = new LoadCSVFailureResponse(
+        "Please enter headers and fileName parameters.").serialize();
     Assert.assertEquals(response, failureResponse);
   }
 
@@ -82,7 +83,8 @@ public class ServerCSVUnitTest {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "maybe");
     Object response = this.loadCSVHandler.handle(loadCSVRequest, null);
 
-    String failureResponse = new LoadCSVFailureResponse("Please enter headers parameter as " + "\"true\" or \"false\"").serialize();
+    String failureResponse = new LoadCSVFailureResponse(
+        "Please enter headers parameter as " + "\"true\" or \"false\"").serialize();
     Assert.assertEquals(response, failureResponse);
   }
 
@@ -112,7 +114,8 @@ public class ServerCSVUnitTest {
     SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, "5");
     String response = this.searchCSVHandler.handle(searchCSVRequest, null);
 
-    String failureResponse = new SearchCSVFailureResponse("Inputted index is out of bounds").serialize();
+    String failureResponse = new SearchCSVFailureResponse(
+        "Inputted index is out of bounds").serialize();
     Assert.assertEquals(response, failureResponse);
   }
 
@@ -123,7 +126,8 @@ public class ServerCSVUnitTest {
     SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, "Galaxy");
     String response = this.searchCSVHandler.handle(searchCSVRequest, null);
 
-    String failureResponse = new SearchCSVFailureResponse("Column index inputted in incorrect format").serialize();
+    String failureResponse = new SearchCSVFailureResponse(
+        "Column index inputted in incorrect format").serialize();
     Assert.assertEquals(response, failureResponse);
   }
 
@@ -207,11 +211,12 @@ public class ServerCSVUnitTest {
   /**
    * Record representing a failure response for loading a csv file.
    *
-   * @param responseType String parameter representing the response type
+   * @param responseType     String parameter representing the response type
    * @param errorDescription String parameter representing the error description upon failure to
-   *     load
+   *                         load
    */
   public record LoadCSVFailureResponse(String responseType, String errorDescription) {
+
     /**
      * Constructor of failure response for load
      *
@@ -238,10 +243,11 @@ public class ServerCSVUnitTest {
    * string. This record is called above in the case where the handle ensures a successful search.
    *
    * @param responseType String representing the successful response type
-   * @param responseMap String representing the response map from the CSV data to turn into a JSON
-   *     string
+   * @param responseMap  String representing the response map from the CSV data to turn into a JSON
+   *                     string
    */
   public record SearchCSVSuccessResponse(String responseType, Map<String, Object> responseMap) {
+
     /**
      * Constructor which takes in a response map and has the string success along with the map
      *
@@ -269,15 +275,16 @@ public class ServerCSVUnitTest {
    * Record used when there was an error with searching through the data and there is no resulting
    * map from search to display. This record is called above in the handle method.
    *
-   * @param responseType String representing a failure
+   * @param responseType     String representing a failure
    * @param errorDescription
    */
   public record SearchCSVFailureResponse(String responseType, String errorDescription) {
+
     /**
      * Constructor for the search failure which takes in a string describing the error.
      *
      * @param errorDescription String describing the error type how the failure occurred ie, column
-     *     index out of bounds
+     *                         index out of bounds
      */
     public SearchCSVFailureResponse(String errorDescription) {
       this("Error", errorDescription);

@@ -23,7 +23,9 @@ public class CSVDataSource {
   private CSVParser<List<String>> csvParser;
   private boolean isLoaded;
 
-  /** Constructor for CSVDataSource, takes in a boolean that is set to false originally. */
+  /**
+   * Constructor for CSVDataSource, takes in a boolean that is set to false originally.
+   */
   public CSVDataSource() {
     this.isLoaded = false;
   }
@@ -37,11 +39,11 @@ public class CSVDataSource {
    * loaded. This method throws exceptions which are caught in the loadcsv handler class.
    *
    * @param fileName String representing the file name the user whats to load
-   * @param headers Boolean representing whether there are headers present
-   * @throws IOException thrown if there are errors reading the file
-   * @throws MalformedRowsException thrown if the csv file has malformed data
+   * @param headers  Boolean representing whether there are headers present
+   * @throws IOException             thrown if there are errors reading the file
+   * @throws MalformedRowsException  thrown if the csv file has malformed data
    * @throws FactoryFailureException thrown if there are errors parsing the file through our csv
-   *     parser
+   *                                 parser
    */
   public void loadCSVData(String fileName, boolean headers)
       throws IOException, MalformedRowsException, FactoryFailureException {
@@ -69,16 +71,16 @@ public class CSVDataSource {
    * class to search the csv for the row containing the value and return it. The exceptions thrown
    * in this methodl is caught in the SearchCSVHandler class where we call this method.
    *
-   * @param toSearch String representing the value to search for in the data
-   * @param headerName String representing the header name the user can choose to search for a value
-   *     through
+   * @param toSearch    String representing the value to search for in the data
+   * @param headerName  String representing the header name the user can choose to search for a
+   *                    value through
    * @param columnIndex String representing the column index the user can choose to search through
    * @return Returns a list of list of strings of the rows in the CSV that contains the searched
-   *     result
+   * result
    * @throws IndexOutOfBoundsException thrown if searching for a column index beyond the limits of
-   *     the csv file
-   * @throws NoSuchElementException thrown if searching for an element that does not exist
-   * @throws IllegalArgumentException thrown if the argument type is invalid
+   *                                   the csv file
+   * @throws NoSuchElementException    thrown if searching for an element that does not exist
+   * @throws IllegalArgumentException  thrown if the argument type is invalid
    */
   public List<List<String>> searchCSV(String toSearch, String headerName, String columnIndex)
       throws IndexOutOfBoundsException, NoSuchElementException, IllegalArgumentException {

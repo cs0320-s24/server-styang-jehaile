@@ -15,13 +15,13 @@ import spark.Route;
  */
 public class LoadCSVHandler implements Route {
 
-  private CSVDataSource dataSource;
+  private final CSVDataSource dataSource;
 
   /**
    * Constructor for the LoadCSVHandler, takes in the CSVDataSource class.
    *
    * @param dataSource Takes in the CSV data source which interacts with the csv data files to
-   *     retrieve the data.
+   *                   retrieve the data.
    */
   public LoadCSVHandler(CSVDataSource dataSource) {
     this.dataSource = dataSource;
@@ -35,8 +35,8 @@ public class LoadCSVHandler implements Route {
    * load the data using parse in a try catch which catches the exception thrown in this method.
    * Lastly handle calls the serialize method on the success response.
    *
-   * @param request Parameter of type Request which allows us to query the users inputs, which for
-   *     this would be the file name
+   * @param request  Parameter of type Request which allows us to query the users inputs, which for
+   *                 this would be the file name
    * @param response Represents the response to the user's query
    * @return returns the serialized, JSON string displayed to the user
    */
@@ -47,7 +47,8 @@ public class LoadCSVHandler implements Route {
     String headersString = request.queryParams("headers");
 
     if (fileName == null || headersString == null) {
-      return new LoadCSVFailureResponse("Please enter headers and fileName parameters.").serialize();
+      return new LoadCSVFailureResponse(
+          "Please enter headers and fileName parameters.").serialize();
     }
 
     if ((!headersString.equalsIgnoreCase("true")) && (!headersString.equalsIgnoreCase("false"))) {
@@ -64,8 +65,8 @@ public class LoadCSVHandler implements Route {
       return new LoadCSVFailureResponse("Error reading file").serialize();
     } catch (MalformedRowsException e) {
       return new LoadCSVFailureResponse(
-              "Malformed file. "
-                  + "Please ensure all rows contain the same number of columns.")
+          "Malformed file. "
+              + "Please ensure all rows contain the same number of columns.")
           .serialize();
     }
     return new LoadCSVSuccessResponse().serialize();
@@ -99,11 +100,12 @@ public class LoadCSVHandler implements Route {
   /**
    * Record representing a failure response for loading a csv file.
    *
-   * @param responseType String parameter representing the response type
+   * @param responseType     String parameter representing the response type
    * @param errorDescription String parameter representing the error description upon failure to
-   *     load
+   *                         load
    */
   public record LoadCSVFailureResponse(String responseType, String errorDescription) {
+
     /**
      * Constructor of failure response for load
      *

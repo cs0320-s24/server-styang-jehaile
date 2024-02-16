@@ -3,8 +3,9 @@ package ServerTestSuite.Requests;
 import spark.Request;
 
 public class BroadbandRequest extends Request {
-  private String state;
-  private String county;
+
+  private final String state;
+  private final String county;
 
   public BroadbandRequest(String state, String county) {
     this.state = state;

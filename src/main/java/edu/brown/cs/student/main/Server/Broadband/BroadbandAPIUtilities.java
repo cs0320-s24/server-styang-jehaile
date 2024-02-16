@@ -14,8 +14,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 
-/** Class that manages deserialization of JSONs responses returned by the API */
+/**
+ * Class that manages deserialization of JSONs responses returned by the API
+ */
 public class BroadbandAPIUtilities {
+
   /**
    * This method deserializes the broadband data. It takes in a string of json broadband data and
    * converts it to java data. This method gets the time of the request, the state name, county name
@@ -23,7 +26,7 @@ public class BroadbandAPIUtilities {
    * parameters.
    *
    * @param jsonBroadbandData takes in the JSON string that the user views to be converted back into
-   *     java data
+   *                          java data
    * @return the deserialized data, of the type broadband data
    * @throws IOException if an I/O error occurs while converting the data
    */
@@ -94,11 +97,12 @@ public class BroadbandAPIUtilities {
    *
    * @param query string representing the API query to be sent
    * @return getAPIResponse method returns an HttpResponse<String> object containing the response
-   *     from the API
-   * @throws URISyntaxException if there is an error in parsing the API query URI
-   * @throws IOException if an I/O error occurs while sending or receiving data from the API
+   * from the API
+   * @throws URISyntaxException   if there is an error in parsing the API query URI
+   * @throws IOException          if an I/O error occurs while sending or receiving data from the
+   *                              API
    * @throws InterruptedException if a thread is interrupted while it is waiting for the API
-   *     response
+   *                              response
    */
   public static HttpResponse<String> getAPIResponse(String query)
       throws URISyntaxException, IOException, InterruptedException {

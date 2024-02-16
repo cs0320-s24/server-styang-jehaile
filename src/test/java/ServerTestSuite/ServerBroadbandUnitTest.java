@@ -126,11 +126,11 @@ public class ServerBroadbandUnitTest {
         broadbandHandler.handle(new BroadbandRequest("california", "orange"), null);
     String expectedSuccessResponse =
         new BroadbandSuccessResponse(
-                new BroadbandData(
-                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
-                    "california",
-                    "orange",
-                    90.3))
+            new BroadbandData(
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
+                "california",
+                "orange",
+                90.3))
             .serialize();
     Assert.assertEquals(successResponse.toString(), expectedSuccessResponse);
   }

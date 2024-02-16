@@ -3,8 +3,9 @@ package ServerTestSuite.Requests;
 import spark.Request;
 
 public class LoadCSVRequest extends Request {
-  private String fileName;
-  private String headers;
+
+  private final String fileName;
+  private final String headers;
 
   public LoadCSVRequest(String fileName, String headers) {
     this.fileName = fileName;

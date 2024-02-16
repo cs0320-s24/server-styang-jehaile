@@ -14,6 +14,7 @@ import spark.Route;
  * which is viewable by the user.
  */
 public class ViewCSVHandler implements Route {
+
   private final CSVDataSource dataSource;
 
   /**
@@ -22,7 +23,7 @@ public class ViewCSVHandler implements Route {
    * the contents
    *
    * @param dataSource Takes in the CSV data source which interacts with the csv data files to
-   *     retrieve the data.
+   *                   retrieve the data.
    */
   public ViewCSVHandler(CSVDataSource dataSource) {
     this.dataSource = dataSource;
@@ -36,10 +37,10 @@ public class ViewCSVHandler implements Route {
    * the result. The response map when successful should contain the contents of the data in a json
    * string.
    *
-   * @param request Parameter of type Request which allows us to query the users inputs
+   * @param request  Parameter of type Request which allows us to query the users inputs
    * @param response Represents the response to the user's query
    * @return returns the serialized data display the contents of the file to the user as a JSON
-   *     string
+   * string
    */
   @Override
   public String handle(Request request, Response response) {
@@ -57,9 +58,10 @@ public class ViewCSVHandler implements Route {
    * Record class for when viewing was successful.
    *
    * @param responseType string representing a successful response
-   * @param responseMap map representing the data if the file to be converted to json
+   * @param responseMap  map representing the data if the file to be converted to json
    */
   public record ViewCSVSuccessResponse(String responseType, Map<String, Object> responseMap) {
+
     /**
      * Constructor for a successful viewing which takes in the response map.
      *
@@ -88,6 +90,7 @@ public class ViewCSVHandler implements Route {
    * @param responseType string representing a failed attemtp to view
    */
   public record ViewCSVFailureResponse(String responseType) {
+
     /**
      * Constructor for viewcsv failure, includes a string which states viewing failed and suggests,
      * loading the file.

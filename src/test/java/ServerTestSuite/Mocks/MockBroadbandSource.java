@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 
 public class MockBroadbandSource implements BroadbandDataSourceInterface {
+
   private final String state;
   private final String county;
   private final double percentAccess;

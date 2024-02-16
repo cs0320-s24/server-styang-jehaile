@@ -25,7 +25,7 @@ public class SearchCSVHandler implements Route {
    * parses, and searches the csv file.
    *
    * @param csvDataSource Takes in the CSV data source which interacts with the csv data files to
-   *     retrieve the data.
+   *                      retrieve the data.
    */
   public SearchCSVHandler(CSVDataSource csvDataSource) {
     this.dataSource = csvDataSource;
@@ -44,11 +44,11 @@ public class SearchCSVHandler implements Route {
    * out a json string indicating what went wrong. This method also uses the boolean to confirm that
    * the file was loaded using its respective handler before the user can search it
    *
-   * @param request Parameter of type Request which allows us to query the users inputs, which for
-   *     this would be the searched value header name and or column index
+   * @param request  Parameter of type Request which allows us to query the users inputs, which for
+   *                 this would be the searched value header name and or column index
    * @param response Represents the response to the user's query
    * @return returns the serialized data display the contents of the file to the user as a JSON
-   *     string
+   * string
    */
   @Override
   public String handle(Request request, Response response) {
@@ -71,7 +71,8 @@ public class SearchCSVHandler implements Route {
       } catch (IndexOutOfBoundsException e) {
         return new SearchCSVFailureResponse("Inputted index is out of bounds").serialize();
       } catch (IllegalArgumentException e) {
-        return new SearchCSVFailureResponse("Column index inputted in incorrect format").serialize();
+        return new SearchCSVFailureResponse(
+            "Column index inputted in incorrect format").serialize();
       }
 
     } else {
@@ -85,10 +86,11 @@ public class SearchCSVHandler implements Route {
    * string. This record is called above in the case where the handle ensures a successful search.
    *
    * @param responseType String representing the successful response type
-   * @param responseMap String representing the response map from the CSV data to turn into a JSON
-   *     string
+   * @param responseMap  String representing the response map from the CSV data to turn into a JSON
+   *                     string
    */
   public record SearchCSVSuccessResponse(String responseType, Map<String, Object> responseMap) {
+
     /**
      * Constructor which takes in a response map and has the string success along with the map
      *
@@ -116,15 +118,16 @@ public class SearchCSVHandler implements Route {
    * Record used when there was an error with searching through the data and there is no resulting
    * map from search to display. This record is called above in the handle method.
    *
-   * @param responseType String representing a failure
+   * @param responseType     String representing a failure
    * @param errorDescription
    */
   public record SearchCSVFailureResponse(String responseType, String errorDescription) {
+
     /**
      * Constructor for the search failure which takes in a string describing the error.
      *
      * @param errorDescription String describing the error type how the failure occurred ie, column
-     *     index out of bounds
+     *                         index out of bounds
      */
     public SearchCSVFailureResponse(String errorDescription) {
       this("Error", errorDescription);

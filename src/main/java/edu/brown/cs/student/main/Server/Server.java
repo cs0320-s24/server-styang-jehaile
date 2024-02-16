@@ -18,6 +18,7 @@ import spark.Spark;
  * depending on what the user requests.
  */
 public class Server {
+
   /**
    * Our options are loadcsv, viewcsv, searchcsv and broadband, we instantiate each of the
    * respective handlers through this server class main method. Load, view and search csv all have
@@ -26,8 +27,8 @@ public class Server {
    * starts our server and proves the site and port for the user to use.
    *
    * @param args an array of strings representing the command-line arguments passed to the program
-   * @throws URISyntaxException thrown if there is an error in parsing a URI.
-   * @throws IOException thrown if an I/O error occurs while reading or writing data
+   * @throws URISyntaxException   thrown if there is an error in parsing a URI.
+   * @throws IOException          thrown if an I/O error occurs while reading or writing data
    * @throws InterruptedException thrown if a thread is interrupted while it is waiting
    */
   public static void main(String[] args)
