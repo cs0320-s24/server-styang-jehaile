@@ -14,17 +14,22 @@ import java.net.URISyntaxException;
 import spark.Spark;
 
 /**
- * Top-level class for this demo. Contains the main() method which starts Spark and runs the various
- * handlers (2).
+ * Top-level class which contains the main() method which starts Spark and runs the various
+ * handlers depending on what the user requests.
  *
- * <p>Notice that the OrderHandler takes in a state (menu) that can be shared if we extended the
- * restaurant They need to share state (a menu). This would be a great opportunity to use dependency
- * injection. If we needed more endpoints, more functionality classes, etc. we could make sure they
- * all had the same shared state.
  */
 public class Server {
-
-  // What are the endpoints that we can access... What happens if you go to them?
+  /**
+   * Our options are loadcsv, viewcsv, searchcsv and broadband,
+   * we instantiate each of the respective handlers through this server class main method.
+   * Load, view and search csv all have the same shared state which is the data source class.
+   *  Meanwhile, the broadband class takes in the class which handles caching which takes in the broadband data source.
+   *  This main method starts our server and proves the site and port for the user to use.
+   * @param args
+   * @throws URISyntaxException
+   * @throws IOException
+   * @throws InterruptedException
+   */
   public static void main(String[] args)
       throws URISyntaxException, IOException, InterruptedException {
     int port = 1234;
