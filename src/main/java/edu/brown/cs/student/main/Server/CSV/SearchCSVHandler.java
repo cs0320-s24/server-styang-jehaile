@@ -12,6 +12,14 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * Class for search handler to handle the json information typed by the user, calligng the csvdatasource which will
+ * return a list of string of the rows from the file. This handler class will convert that into JSON strings which will
+ * be
+ * This class is used to illustrate how to build and send a GET request then prints the response. It
+ *  * will also demonstrate a simple Moshi deserialization from online data.
+ */
+
 public class SearchCSVHandler implements Route {
 
   private final CSVDataSource dataSource;
