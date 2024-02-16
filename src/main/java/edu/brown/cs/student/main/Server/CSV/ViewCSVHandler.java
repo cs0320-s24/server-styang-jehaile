@@ -42,7 +42,7 @@ public class ViewCSVHandler implements Route {
    *     string
    */
   @Override
-  public Object handle(Request request, Response response) {
+  public String handle(Request request, Response response) {
     Map<String, Object> responseMap = new HashMap<>();
 
     if (this.dataSource.isLoaded()) {

@@ -2,6 +2,7 @@ package ServerTestSuite;
 
 import ServerTestSuite.Requests.LoadCSVRequest;
 import ServerTestSuite.Requests.SearchCSVRequest;
+import ServerTestSuite.Requests.ViewCSVRequest;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import edu.brown.cs.student.main.Server.CSV.CSVDataSource;
@@ -145,6 +146,41 @@ public class ServerCSVUnitTest {
     String response = this.searchCSVHandler.handle(searchCSVRequest, null);
 
     Assert.assertTrue(response.contains("Proxima Centauri"));
+  }
+
+  @Test
+  public void testSearchBeforeLoad() {
+    SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, null);
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
+
+    String failureResponse = new SearchCSVFailureResponse("CSV File not loaded.").serialize();
+    Assert.assertEquals(response, failureResponse);
+  }
+
+  @Test
+  public void testViewSuccess() {
+    LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequest, null);
+    ViewCSVRequest viewCSVRequest = new ViewCSVRequest();
+    String response = this.viewCSVHandler.handle(viewCSVRequest, null);
+
+    Assert.assertEquals(response, "{\"responseType\":\"Success\",\"responseMap\":"
+        + "{\"Data:\":[[\"STARID\",\"PROPERNAME\",\"X\",\"Y\",\"Z\"],[\"0\",\""
+        + "Sol\",\"0\",\"0\",\"0\"],[\"1\",\"\",\"282.43485\",\"0.00449\",\"5.36884\"],"
+        + "[\"2\",\"\",\"43.04329\",\"0.00285\",\"-15.24144\"],[\"3\",\"\",\"277.11358\",\""
+        + "0.02422\",\"223.27753\"],[\"3759\",\"96 G. Psc\",\"7.26388\",\"1.55643\",\"0.68697\"],"
+        + "[\"70667\",\"Proxima Centauri\",\"-0.47175\",\"-0.36132\",\"-1.15037\"],[\"71454\",\""
+        + "Rigel Kentaurus B\",\"-0.50359\",\"-0.42128\",\"-1.1767\"],[\"71457\",\"Rigel Kentaurus "
+        + "A\",\"-0.50362\",\"-0.42139\",\"-1.17665\"],[\"87666\",\"Barnard's Star\",\"-0.01729\","
+        + "\"-1.81533\",\"0.14824\"],[\"118721\",\"\",\"-2.28262\",\"0.64697\",\"0.29354\"]]}}");
+  }
+
+  @Test
+  public void testViewFailureNoLoad() {
+    ViewCSVRequest viewCSVRequest = new ViewCSVRequest();
+    String response = this.viewCSVHandler.handle(viewCSVRequest, null);
+
+    Assert.assertEquals(response, "{\"responseType\":\"Failed to view. Please load CSV file.\"}");
   }
 
 
