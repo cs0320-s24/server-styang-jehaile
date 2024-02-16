@@ -25,10 +25,10 @@ public class Server {
    * Load, view and search csv all have the same shared state which is the data source class.
    *  Meanwhile, the broadband class takes in the class which handles caching which takes in the broadband data source.
    *  This main method starts our server and proves the site and port for the user to use.
-   * @param args
-   * @throws URISyntaxException
-   * @throws IOException
-   * @throws InterruptedException
+   * @param args an array of strings representing the command-line arguments passed to the program
+   * @throws URISyntaxException thrown if there is an error in parsing a URI.
+   * @throws IOException thrown if an I/O error occurs while reading or writing data
+   * @throws InterruptedException thrown if a thread is interrupted while it is waiting
    */
   public static void main(String[] args)
       throws URISyntaxException, IOException, InterruptedException {

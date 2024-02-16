@@ -20,12 +20,11 @@ import spark.Route;
 
 public class BroadbandHandler implements Route {
 
-  private BroadbandDataSourceInterface state;
+  private final BroadbandDataSourceInterface state;
 
   /**
    * Constructor for the broadband handler takes in the broadband data source interface.
-   *
-   * @param state
+   * @param state instance of the data source to enable the use of the getter
    */
 
   public BroadbandHandler(BroadbandDataSourceInterface state) {
@@ -33,15 +32,13 @@ public class BroadbandHandler implements Route {
   }
 
   /**
-   * This method queries the request made by the caller by getting the desired state and county
-   * name. This method uses the Broadband failure response to display messages of invalid requests.
-   * This method creates the response map of the data requested by the user and user the interface's
-   * getter to retreive the data and uses the Broadband succcess response to serialize the java data
-   * into a JSON string viewable by the user.
-   *
-   * @param request
-   * @param response
-   * @return
+   * This method queries the request made by the caller by getting the desired state and county name.
+   * This method uses the Broadband failure response to display messages of invalid requests. This method creates
+   * the response map of the data requested by the user and user the interface's getter to retreive the data and
+   * uses the Broadband succcess response to serialize the java data into a JSON string viewable by the user.
+   * @param request Parameter of type Request which allows us to query the users inputs, such as the state and county
+   * @param response Represents the response to the user's query
+   * @return returns the serialized data display the contents state, county, time and percentage of braodband access to the user
    */
   @Override
   public Object handle(Request request, Response response) {
@@ -78,9 +75,8 @@ public class BroadbandHandler implements Route {
 
   /**
    * Record representing a successful interaction with broadband response.
-   *
-   * @param responseType
-   * @param responseData
+   * @param responseType String representing a successful response
+   * @param responseData Broadband data response according to the user's request to be serialized
    */
 
   public record BroadbandSuccessResponse(
@@ -88,18 +84,16 @@ public class BroadbandHandler implements Route {
 
     /**
      * Constructor which takes in the broadband data class.
-     *
-     * @param responseData
+     * @param responseData Broadband data response according to the user's request to be serialized
      */
     public BroadbandSuccessResponse(BroadbandData responseData) {
       this("Loaded successfully! :)", responseData);
     }
 
     /**
-     * Serialize method uses moshi to turn the java data into a JSON string accessible by the viewer
-     * when the request and response were successful this is called in the handle method.
-     *
-     * @return
+     * Serialize method uses moshi to turn the java data into a JSON string accessible by the viewer when the request
+     * and response were successful this is called in the handle method.
+     * @return String returning the requested data from the census such that the user can view it by serializing it
      */
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();
@@ -111,30 +105,26 @@ public class BroadbandHandler implements Route {
 
   /**
    * Record representing a failure to response to the broadband request.
-   *
-   * @param responseType
-   * @param dateTime
-   * @param errorDescription
+   * @param responseType String representing a failed response
+   * @param dateTime String representing the time the data was queried
+   * @param errorDescription String representing the reason for failing to provide a response to the query
    */
   public record BroadbandFailureResponse(
       String responseType, String dateTime, String errorDescription) {
 
     /**
-     * Constructor for the broadband failure response, which takes an a string to describe the
-     * error.
-     *
-     * @param errorDescription
+     * Constructor for the broadband failure response, which takes in a string to describe the error.
+     * @param errorDescription String describing the failure to provide a response
      */
     public BroadbandFailureResponse(String errorDescription) {
       this("Error", LocalDateTime.now().toString(), errorDescription);
     }
 
     /**
-     * The serialization for a failed broadband response, which converts the java data into a JSON
-     * string describing what went wrong when handling the request. This method is called in the
-     * handle method upon invalid requests and errors.
-     *
-     * @return
+     * The serialization for a failed broadband response, which converts the java data into a JSON string
+     * describing what went wrong when handling the request. This method is called in the handle method upon invalid requests
+     * and errors.
+     * @return String describing the error description in the format of a JSON so that the user can view it
      */
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();
