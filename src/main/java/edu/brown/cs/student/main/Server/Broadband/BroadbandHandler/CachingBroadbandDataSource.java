@@ -28,8 +28,8 @@ public class CachingBroadbandDataSource implements BroadbandDataSourceInterface 
 
     this.cache =
         CacheBuilder.newBuilder()
-            .maximumSize(1)
-            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .maximumSize(2)
+            .expireAfterWrite(1000, TimeUnit.MILLISECONDS)
             .recordStats()
             .build(
                 new CacheLoader<>() {
