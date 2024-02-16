@@ -13,6 +13,11 @@ public class BroadbandDataSource implements BroadbandDataSourceInterface{
 
   HashMap<String, String> stateToCode;
 
+  /**
+   * This is the constructor for the broadbanddatasource class. Inside the constructor there is a try catch
+   * which tries to call on the api to get the response and deserialize the state map. If this is unsuccessful and any of the
+   * errors (IOException, URISyntax Exception, Interrupted Exception are caught then the map is set to null.
+   */
   public BroadbandDataSource() {
     try {
       HttpResponse<String> stateToCode = BroadbandAPIUtilities.getAPIResponse(
@@ -25,6 +30,20 @@ public class BroadbandDataSource implements BroadbandDataSourceInterface{
     }
   }
 
+  /**
+   * This method is a getter which takes in the state and county then has a return type of broadband data. First the method null
+   * checks the state code map and throws an illegal state exception if null. Then it ensures that the state is in the map.
+   * Next we make all the state names lower case to ensure that capitalization does not intefere with finding the data.
+   * We then have a for loop to build the list and extract the county code for the requested county. Lastly, this
+   * method sends a request based on the state code and county code requested by the caller and returns the deserialized data.
+   * @param state
+   * @param county
+   * @return
+   * @throws URISyntaxException
+   * @throws IOException
+   * @throws InterruptedException
+   * @throws NoSuchElementException
+   */
   public BroadbandData getBroadbandData(String state, String county)
       throws URISyntaxException, IOException, InterruptedException, NoSuchElementException {
     if (this.stateToCode == null) {
@@ -65,6 +84,17 @@ public class BroadbandDataSource implements BroadbandDataSourceInterface{
     return BroadbandAPIUtilities.deserializeBroadbandData(dataResponse);
   }
 
+  /**
+   * This method is used to send the resquest to the api to return a string of the results for the state, county broadband data
+   * by using the HttpResponse class and the api utilities class which gets the api response based on the
+   * state code and county code passed into this method.
+   * @param stateCode
+   * @param countyCode
+   * @return
+   * @throws URISyntaxException
+   * @throws IOException
+   * @throws InterruptedException
+   */
   private String sendRequest(String stateCode, String countyCode)
       throws URISyntaxException, IOException, InterruptedException {
 
