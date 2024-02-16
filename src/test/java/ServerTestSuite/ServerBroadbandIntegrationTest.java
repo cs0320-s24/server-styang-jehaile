@@ -37,7 +37,7 @@ public class ServerBroadbandIntegrationTest {
     // Re-initialize parser, state, etc. for every test method
 
     // Use *MOCKED* data when in this test environment.
-    BroadbandDataSourceInterface mockedSource = new MockBroadbandSource(new BroadbandData(LocalDateTime.of(2024, 2,15, 12, 13, 10), "california", "orange", 90.3));
+    BroadbandDataSourceInterface mockedSource = new MockBroadbandSource(new BroadbandData(LocalDateTime.of(2024, 2,15, 12, 13, 10).toString(), "california", "orange", 90.3));
     Spark.get("/broadband", new BroadbandHandler(new CachingBroadbandDataSource(mockedSource)));
     Spark.awaitInitialization(); // don't continue until the server is listening
 
@@ -78,7 +78,7 @@ public class ServerBroadbandIntegrationTest {
     assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
 
     assertEquals(
-        new BroadbandData(LocalDateTime.of(2024, 2,15, 12, 13, 10), "california", "orange", 90.3).toString(),
+        new BroadbandData(LocalDateTime.of(2024, 2,15, 12, 13, 10).toString(), "california", "orange", 90.3).toString(),
         responseBody.get("responseData").toString());
     // Notice we had to do something strange above, because the map is
     // from String to *Object*. Awkward testing caused by poor API design...
@@ -140,27 +140,8 @@ public class ServerBroadbandIntegrationTest {
     loadConnection.disconnect();
   }
 
-//  @Test
-//  public void testBroadbandRequestDateTime() throws IOException {
-//    /////////// LOAD DATASOURCE ///////////
-//    // Set up the request, make the request
-//    HttpURLConnection loadConnection = tryRequest("broadband?state=california&county=orange");
-//    // Get an OK response (the *connection* worked, the *API* provides an error response)
-//    assertEquals(200, loadConnection.getResponseCode());
-//    // Get the expected response: a success
-//    Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
-//    assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
-//
-//    // Round time to several milliseconds
-//    assertEquals(
-//        LocalDateTime.now().toString().substring(0, 18),
-//        responseBody.get("dateTime").toString().substring(0, 18));
-//
-//    loadConnection.disconnect();
-//  }
-
   @Test
-  public void testCachingFunctionality() throws IOException {
+  public void testCachingFunctionality() throws IOException, InterruptedException {
     /////////// LOAD DATASOURCE ///////////
     // Set up the request, make the request
     HttpURLConnection loadConnection = tryRequest("broadband?state=california&county=orange");
@@ -170,13 +151,12 @@ public class ServerBroadbandIntegrationTest {
     Map<String, Object> responseBody = adapter.fromJson(new Buffer().readFrom(loadConnection.getInputStream()));
     assertEquals("Loaded successfully! :)", responseBody.get("responseType"));
     // Round time to several milliseconds
-    assertEquals(
-        firstCallTime.toString().substring(0, 18),
-        responseBody.get("dateTime").toString().substring(0, 18));
 
-    assertEquals(
-        new BroadbandData("california", "orange", 90.3).toString(),
-        responseBody.get("responseData").toString());
+    String firstCallTime = responseBody.get("responseData").toString();
+
+    loadConnection.disconnect();
+
+    Thread.sleep(5000);
 
     // Set up second request, make the request
     HttpURLConnection loadConnectionAgain = tryRequest("broadband?state=california&county=orange");
@@ -186,19 +166,9 @@ public class ServerBroadbandIntegrationTest {
     Map<String, Object> responseBodyAgain = adapter.fromJson(new Buffer().readFrom(loadConnectionAgain.getInputStream()));
     assertEquals("Loaded successfully! :)", responseBodyAgain.get("responseType"));
 
-    // Check that it was received previously
-    assertEquals(
-        firstCallTime.toString().substring(0, 18),
-        responseBodyAgain.get("dateTime").toString().substring(0, 18));
+    String secondCallTime = responseBody.get("responseData").toString();
 
-    Assert.assertNotEquals(
-        LocalDateTime.now().toString().substring(0, 18),
-        responseBodyAgain.get("dateTime").toString().substring(0, 18)
-    );
-
-    assertEquals(
-        new BroadbandData("california", "orange", 90.3).toString(),
-        responseBodyAgain.get("responseData").toString());
+    Assert.assertNotEquals(firstCallTime, secondCallTime);
 
     loadConnection.disconnect();
   }

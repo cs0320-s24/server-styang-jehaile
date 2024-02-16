@@ -29,7 +29,7 @@ public class BroadbandAPIUtilities {
     String countyName = countySplit[0];
     String stateName = countySplit[1];
 
-    return new BroadbandData(LocalDateTime.now(), stateName, countyName, percentAccess);
+    return new BroadbandData(LocalDateTime.now().toString(), stateName, countyName, percentAccess);
   }
 
   public static HashMap<String, String> deserializeStateMap(HttpResponse<String> jsonStateMap)
