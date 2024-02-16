@@ -15,18 +15,19 @@ import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * This is our testing suite for the CSV server classes and methods. Within this class we test the
+ * LoadCSVHandler, SearchCSVHandler and ViewCSVHandler by running their respective endpoints and ensuring that
+ * they expect accordingly. This test class starts the server locally, sends web requests and evaluates the response.
+ */
 public class ServerCSVIntegrationTestSuite {
-  // Write a test class that starts up your server locally, sends it web requests, and evaluates the
-  // response.
-  // (This will all be done on your local computer; no internet connection needed.)
-//  @BeforeAll
-//  public static void setUp() {
-//      RestAssured.baseURI = "http://localhost";
-//      RestAssured.port = 1234;
-//  }
+
   private static Thread serverThread;
 
+    /**
+     * This method sets up the server thread before any of the tests are run. This also sleeps so that
+     * interference is reduced.
+     */
     @BeforeAll
     public static void setUp() {
         // Start the server in a new thread
@@ -47,12 +48,19 @@ public class ServerCSVIntegrationTestSuite {
         }
     }
 
+    /**
+     * This method stops the server after the tests are run.
+     */
     @AfterAll
     public static void tearDown() {
         // Stop the server
         serverThread.interrupt();
     }
 
+    /**
+     * This test runs the endpoint for loading a csv works by checking the response code.
+     * @throws IOException thrown if there are errors loading file, establishing the connection, reading through buffer reader
+     */
     @Test
 
     public void testLoadCSV() throws IOException {
@@ -70,9 +78,12 @@ public class ServerCSVIntegrationTestSuite {
             response.append(inputLine);
         }
         in.close();
-
-
     }
+
+    /**
+     * This tests the view csv endpoint by checking the response code.
+     * @throws IOException throw if there is an issue viewing the file.
+     */
     @Test
     public void testViewCSV() throws IOException {
 
@@ -90,9 +101,38 @@ public class ServerCSVIntegrationTestSuite {
             response.append(inputLine);
         }
         in.close();
+    }
+
+    /**
+     * Tests that load csv displays the response that a file was successfully loaded.
+     * @throws IOException thrown if there are errors loading file, establishing the connection, reading through buffer reader
+     */
+    @Test
+    public void testLoadCSVResponse() throws IOException {
+        String csvFileName = "ten-star.csv";
+        URL url = new URL("http://localhost:1234/loadcsv?fileName=" + csvFileName);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        assertEquals(200, responseCode);
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        assertTrue(response.toString().contains("Loaded successfully!"));
 
 
     }
+
+    /**
+     * Tests that search csv has the correct response code.
+     * @throws IOException thrown if there are errors loading/searching file, establishing the connection, reading through buffer reader
+     */
     @Test
     public void testSearchCSV() throws IOException {
         URL url = new URL("http://localhost:1234/searchcsv");
@@ -111,6 +151,11 @@ public class ServerCSVIntegrationTestSuite {
         in.close();
 
     }
+
+    /**
+     * This test ensures that a user can not view a file that has been loaded by checking the string.
+     * @throws IOException thrown if there are issues viewing the file, using the reader or establishing the connection
+     */
     @Test
     public void testViewBeforeLoad() throws IOException {
 
@@ -129,10 +174,14 @@ public class ServerCSVIntegrationTestSuite {
             response.append(inputLine);
         }
         in.close();
-        System.out.print(response.toString());
 
         assertTrue(response.toString().contains("Failed to view. Please load CSV file."));
         }
+
+    /**
+     * This tests that a file can not be searched without being loaded
+      * @throws IOException thrown if there are issues establishing a connection, using the reader to search
+     */
     @Test
     public void testSearchBeforeLoad() throws IOException {
 
@@ -155,6 +204,12 @@ public class ServerCSVIntegrationTestSuite {
 
         assertTrue(response.toString().contains("CSV File not loaded."));
     }
+
+    /**
+     * This tests the contents of the view csv by checking that it contains the correct values.
+     * @throws IOException thrown if there are errors loading the file, viewing the file or establishing a connection
+     * @throws InterruptedException thrown if the thread.sleep method fails to execute
+     */
     @Test
     public void testContentsOfViewCSV() throws IOException, InterruptedException {
         String csvFileName = "ten-star.csv";
@@ -181,8 +236,6 @@ public class ServerCSVIntegrationTestSuite {
         }
         in.close();
 
-        //System.out.println("Response: " + response.toString());
-
         assertTrue(response.toString().contains("StarID"));
         assertTrue(response.toString().contains("ProperName"));
         assertTrue(response.toString().contains("X"));
@@ -191,7 +244,16 @@ public class ServerCSVIntegrationTestSuite {
         assertTrue(response.toString().contains("Sol"));
         assertTrue(response.toString().contains("Proxima Centauri"));
         assertTrue(response.toString().contains("-0.01729"));
+        assertTrue(response.toString().contains("71457, Rigel Kentaurus A, -0.50362, -0.42139, -1.17665"));
+
     }
+
+    /**
+     * Similar to the previous test this handles displaying the contents of a larger data file to the user to
+     * check that our program also works with large datasets.
+     * @throws IOException thrown if there are errors loading the file, viewing the file or establishing a connection
+     * @throws InterruptedException thrown if the thread.sleep method fails to execute
+     */
 
     @Test
 
@@ -220,13 +282,18 @@ public class ServerCSVIntegrationTestSuite {
         }
         in.close();
 
-        //System.out.println("Response: " + response.toString());
-
         assertTrue(response.toString().contains("Asian"));
         assertFalse(response.toString().contains("Simon"));
         assertTrue(response.toString().contains("washington-county-ri"));
         assertTrue(response.toString().contains("[0, Total, 2020, 2020, 75857, 2022, \"Kent County, RI\", 05000US44003, kent-county-ri]"));
     }
+
+    /**
+     * This test checks the contents of the search csv to ensure that user is receiving the correct information when search
+     * through the data from the value they input.
+     * @throws IOException thrown if there are errors loading the file, searching the file, using the reader or establishing a connection
+     * @throws InterruptedException thrown if the thread.sleep method fails to execute
+     */
     @Test
     public void testContentsOfSearchCSV() throws IOException, InterruptedException {
         String csvFileName = "ten-star.csv";
@@ -258,6 +325,12 @@ public class ServerCSVIntegrationTestSuite {
         assertTrue(response.toString().contains("Matches:=[[87666, Barnard's Star, -0.01729, -1.81533, 0.14824]]}]"));
         assertFalse(response.toString().contains("Jowet"));
     }
+
+    /**
+     * This tests that if a value is not present in the data set no matches are shown.
+     * @throws IOException thrown if there are errors loading the file, searching the file, using the reader or establishing a connection
+     * @throws InterruptedException thrown if the thread.sleep method fails to execute
+     */
     @Test
     public void testSearchCSVInvalids() throws IOException, InterruptedException {
         String csvFileName = "ri_city_and_town_income.csv";
@@ -286,6 +359,12 @@ public class ServerCSVIntegrationTestSuite {
         in.close();
         assertEquals(response.toString(), "SearchCSVSuccessResponse[responseType=Success, responseMap={Matches:=[]}]");
     }
+
+    /**
+     * This test that search works while using header names as well by checking the contents of the user's value
+     * @throws IOException thrown if there are errors loading the file, searching the file, using the reader or establishing a connection
+     * @throws InterruptedException thrown if there are issues with the thread sleeping
+     */
     @Test
     public void testSearchCSVHeader() throws IOException, InterruptedException {
         String csvFileName = "ri_city_and_town_income.csv";
@@ -316,9 +395,47 @@ public class ServerCSVIntegrationTestSuite {
 
         assertTrue(response.toString().contains("Burrillville, \"96,824.00\", \"109,340.00\", \"39,470.00\""));
         assertTrue(response.toString().contains("Burrillville"));
-        //{"responseType":"Success","responseMap":{"Matching rows":[["Burrillville","\"96,824.00\"","\"109,340.00\"","\"39,470.00\""]]}}
-        //assertTrue(response.toString().contains("\"Matching rows\":[[\"87666\",\"Barnard's Star\",\"-0.01729\",\"-1.81533\",\"0.14824\"]]"));
-        //assertFalse(response.toString().contains("Jowet"));
+
+    }
+
+    /**
+     * This test searching while using the column index integer so that the user can search columns by checking what the
+     * program displays.
+     * @throws IOException thrown if there are errors loading (parsing) or searching the file.
+     * @throws InterruptedException thrown if the thread.sleep method fails to execute
+     */
+    @Test
+    public void testSearchCSVColumnIndex() throws IOException, InterruptedException {
+        String csvFileName = "ri_city_and_town_income.csv";
+        URL loadUrl = new URL("http://localhost:1234/loadcsv?fileName=" + csvFileName);
+        HttpURLConnection loadConnection = (HttpURLConnection) loadUrl.openConnection();
+        loadConnection.setRequestMethod("GET");
+        assertEquals(200, loadConnection.getResponseCode());
+
+        Thread.sleep(3000);
+        String value = "114,202.00";
+        String index = "2";
+
+        URL viewUrl = new URL("http://localhost:1234/searchcsv?fileName=" + csvFileName  + "&toSearch=" + value + "&columnIndex" + index );
+        HttpURLConnection viewConnection = (HttpURLConnection) viewUrl.openConnection();
+        viewConnection.setRequestMethod("GET");
+
+        int responseCode = viewConnection.getResponseCode();
+        assertEquals(200, responseCode);
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(viewConnection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        System.out.print(response.toString());
+        assertTrue(response.toString().contains("114,202.00"));
+        assertTrue(response.toString().contains("responseMap={Matches:=[[South Kingstown, \"102,242.00\", \"114,202.00\", \"42,080.00\"]]}"));
+
+
     }
 }
 
