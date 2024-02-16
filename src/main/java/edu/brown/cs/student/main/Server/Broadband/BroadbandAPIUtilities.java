@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class BroadbandAPIUtilities {
     String countyName = countySplit[0];
     String stateName = countySplit[1];
 
-    return new BroadbandData(LocalDateTime.now().toString(), stateName, countyName, percentAccess);
+    return new BroadbandData(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(), stateName, countyName, percentAccess);
   }
 
   public static HashMap<String, String> deserializeStateMap(HttpResponse<String> jsonStateMap)
