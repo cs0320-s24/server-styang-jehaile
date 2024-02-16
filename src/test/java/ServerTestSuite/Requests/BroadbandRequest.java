@@ -1,6 +1,5 @@
-package ServerTestSuite;
+package ServerTestSuite.Requests;
 
-import java.util.Set;
 import spark.Request;
 
 public class BroadbandRequest extends Request {

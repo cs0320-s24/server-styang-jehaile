@@ -2,8 +2,6 @@ package ServerTestSuite.Mocks;
 
 import edu.brown.cs.student.main.Server.Broadband.BroadbandData;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandDataSourceInterface;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
@@ -30,8 +28,11 @@ public class MockBroadbandSource implements BroadbandDataSourceInterface {
       return new BroadbandData(time, state, county, percentAccess);
 
     } else {
-      return new BroadbandData(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
-          "wisconsin", "dane", 90.0);
+      return new BroadbandData(
+          LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
+          "wisconsin",
+          "dane",
+          90.0);
     }
   }
 }

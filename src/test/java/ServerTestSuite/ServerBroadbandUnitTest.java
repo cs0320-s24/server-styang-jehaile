@@ -1,25 +1,19 @@
 package ServerTestSuite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import ServerTestSuite.Mocks.MockBroadbandSource;
+import ServerTestSuite.Requests.BroadbandRequest;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandData;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandDataSource;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandDataSourceInterface;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandHandler;
-import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.BroadbandHandler.BroadbandSuccessResponse;
 import edu.brown.cs.student.main.Server.Broadband.BroadbandHandler.CachingBroadbandDataSource;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import okio.Buffer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testng.Assert;
@@ -30,7 +24,6 @@ public class ServerBroadbandUnitTest {
   private BroadbandDataSourceInterface mockedSource;
   private BroadbandDataSource webSource;
   private BroadbandHandler broadbandHandler;
-
 
   @BeforeEach
   public void setup() {
@@ -46,7 +39,8 @@ public class ServerBroadbandUnitTest {
 
     Thread.sleep(2500);
 
-    // Make the same request again and ensure that the response is different from the initial response
+    // Make the same request again and ensure that the response is different from the initial
+    // response
     BroadbandData cachedResponse = cachingSource.getBroadbandData("california", "orange");
 
     // Assert that the cached response is not equal to the initial response
@@ -75,7 +69,8 @@ public class ServerBroadbandUnitTest {
 
     Thread.sleep(1000);
 
-    // Make the same request again and ensure that the response is different from the initial response
+    // Make the same request again and ensure that the response is different from the initial
+    // response
     BroadbandData cachedResponse = cachingSource.getBroadbandData("california", "orange");
 
     // Assert that the cached response is not equal to the initial response
@@ -87,7 +82,12 @@ public class ServerBroadbandUnitTest {
       throws URISyntaxException, IOException, InterruptedException {
     BroadbandData response = webSource.getBroadbandData("california", "orange");
 
-    BroadbandData expectedResponse = new BroadbandData(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(), "California", "Orange County", 93.0);
+    BroadbandData expectedResponse =
+        new BroadbandData(
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
+            "California",
+            "Orange County",
+            93.0);
 
     Assert.assertEquals(response.toString(), expectedResponse.toString());
   }
@@ -95,29 +95,43 @@ public class ServerBroadbandUnitTest {
   @Test
   public void testGetResponseNoSuchElement()
       throws URISyntaxException, IOException, InterruptedException {
-    Assert.assertThrows(NoSuchElementException.class, () -> {
-      webSource.getBroadbandData("switzerland", "orange");
-    });
+    Assert.assertThrows(
+        NoSuchElementException.class,
+        () -> {
+          webSource.getBroadbandData("switzerland", "orange");
+        });
 
-    Assert.assertThrows(NoSuchElementException.class, () -> {
-      webSource.getBroadbandData("", "orange");
-    });
+    Assert.assertThrows(
+        NoSuchElementException.class,
+        () -> {
+          webSource.getBroadbandData("", "orange");
+        });
 
-    Assert.assertThrows(NoSuchElementException.class, () -> {
-      webSource.getBroadbandData("california", "switzerland");
-    });
+    Assert.assertThrows(
+        NoSuchElementException.class,
+        () -> {
+          webSource.getBroadbandData("california", "switzerland");
+        });
 
-    Assert.assertThrows(NoSuchElementException.class, () -> {
-      webSource.getBroadbandData("california", "");
-    });
+    Assert.assertThrows(
+        NoSuchElementException.class,
+        () -> {
+          webSource.getBroadbandData("california", "");
+        });
   }
 
   @Test
   public void testBroadbandHandlerSuccess() {
-    Object successResponse = broadbandHandler.handle(new BroadbandRequest("california", "orange"), null);
-    String expectedSuccessResponse = new BroadbandSuccessResponse(
-        new BroadbandData(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
-            "california", "orange", 90.3)).serialize();
+    Object successResponse =
+        broadbandHandler.handle(new BroadbandRequest("california", "orange"), null);
+    String expectedSuccessResponse =
+        new BroadbandSuccessResponse(
+                new BroadbandData(
+                    LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString(),
+                    "california",
+                    "orange",
+                    90.3))
+            .serialize();
     Assert.assertEquals(successResponse.toString(), expectedSuccessResponse);
   }
 
@@ -157,16 +171,13 @@ public class ServerBroadbandUnitTest {
     Assert.assertTrue(failureResponse.toString().contains("Missing required query parameter"));
   }
 
-
   /**
    * Record representing a successful interaction with broadband response.
    *
    * @param responseType
    * @param responseData
    */
-
-  public record BroadbandSuccessResponse(
-      String responseType, BroadbandData responseData) {
+  public record BroadbandSuccessResponse(String responseType, BroadbandData responseData) {
 
     /**
      * Constructor which takes in the broadband data class.
