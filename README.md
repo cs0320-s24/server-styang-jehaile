@@ -19,7 +19,7 @@ Simon Yang and Jowet Haile
 https://github.com/cs0320-s24/server-styang-jehaile.git
 # Design choices – high level design
 Our program has 5 main components: Server and ServerTestSuite in addition to CSVParser, Search Utility and Exceptions class from the previous sprint. These main packages also have subpackages which we will go through below.
-From Sprint 1: CSV README - (INSERT)
+From Sprint 1:
 
 ## Server Package:
 
