@@ -22,6 +22,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import spark.Spark;
+/**
+ *
+ The ServerBroadbandIntegrationTest tests confirm that the API server works as expected the JUnit integration tests
+ */
 
 public class ServerBroadbandIntegrationTest {
 
@@ -63,6 +67,11 @@ public class ServerBroadbandIntegrationTest {
     return clientConnection;
   }
 
+  /**
+   * This test checks the broadband request and response works successfully by testing the resposne code,
+   * and specific county percentage.
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
   @Test
   public void testBroadbandRequestSuccess() throws IOException {
     /////////// LOAD DATASOURCE ///////////
@@ -89,6 +98,12 @@ public class ServerBroadbandIntegrationTest {
     loadConnection.disconnect();
   }
 
+  /**
+   * This test checks that if a broadband request was made without entering a state name the json states error and
+   * instructs the user to input a state name.
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
+
   @Test
   public void testBroadbandRequestFailureNoState() throws IOException {
     /////////// LOAD DATASOURCE ///////////
@@ -108,6 +123,11 @@ public class ServerBroadbandIntegrationTest {
     loadConnection.disconnect();
   }
 
+  /**
+   * This test checks that if a broadband request was made without entering a county name the json states error
+   * and instructs the user to input a county name.
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
   @Test
   public void testBroadbandRequestFailureNoCounty() throws IOException {
     /////////// LOAD DATASOURCE ///////////
@@ -126,6 +146,12 @@ public class ServerBroadbandIntegrationTest {
 
     loadConnection.disconnect();
   }
+
+  /**
+   * This test checks that if a broadband request was made without entering a county or state name the json
+   * states error and instructs the user to input a county name and state name
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
 
   @Test
   public void testBroadbandRequestFailureNoCountyNoState() throws IOException {
@@ -146,6 +172,11 @@ public class ServerBroadbandIntegrationTest {
     loadConnection.disconnect();
   }
 
+  /**
+   * This tests that if a user enters a broadband request without a state but a county, like &state=&county=providence
+   * That the user ensures they are putting in a valid state by displaying the associated json message
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
   @Test
   public void testBroadbandRequestEmptyState() throws IOException {
     /////////// LOAD DATASOURCE ///////////
@@ -166,6 +197,12 @@ public class ServerBroadbandIntegrationTest {
 
     loadConnection.disconnect();
   }
+
+  /**
+   * This tests that if a user enters a broadband request without a county but a state, like &state=georgia&county=
+   * That the user ensures they are putting in a valid county by displaying the associated json message
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
 
   @Test
   public void testBroadbandRequestEmptyCounty() throws IOException {
@@ -188,6 +225,11 @@ public class ServerBroadbandIntegrationTest {
     loadConnection.disconnect();
   }
 
+  /**
+   * This tests that if a user enters a broadband request without a state and a county, like &state=&county=
+   * That the user ensures they are putting in a valid county and state by displaying the associated json message
+   * @throws IOException thrown if there is a failure displaying the json data
+   */
   @Test
   public void testBroadbandRequestEmptyCountyEmptyState() throws IOException {
     /////////// LOAD DATASOURCE ///////////

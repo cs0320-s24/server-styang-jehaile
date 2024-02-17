@@ -18,6 +18,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testng.Assert;
 
+/**
+ *
+ The ServerBroadbandIntegrationTest tests confirm that the API server works as expected the JUnit integration tests
+ */
+
 public class ServerBroadbandUnitTest {
 
   private CachingBroadbandDataSource cachingSource;
@@ -33,6 +38,12 @@ public class ServerBroadbandUnitTest {
     broadbandHandler = new BroadbandHandler(mockedSource);
   }
 
+  /**
+   * This test checks the time expiration limit on the cacher, by checking that if a user loads a request then waits for
+   * a time limit that when they cache again that it is not the same as initial response.
+   * @throws IOException if there issues caching
+   * @throws InterruptedException if there is an interruption
+   */
   @Test
   public void testCachingFunctionalityTimeExpiration() throws IOException, InterruptedException {
     BroadbandData initialResponse = cachingSource.getBroadbandData("california", "orange");
@@ -47,6 +58,12 @@ public class ServerBroadbandUnitTest {
     Assert.assertNotEquals(initialResponse.toString(), cachedResponse.toString());
   }
 
+
+  /**
+   * This test checks the time expiration limit on the cacher, by checking that if a user loads a request then waits
+   * for a time limit that is short so then when they cache again that it is the same as initial response.
+   * @throws InterruptedException if there is an interruption
+   */
   @Test
   public void testCachingFunctionalityTimeNonExpiration() throws InterruptedException {
 
@@ -61,11 +78,16 @@ public class ServerBroadbandUnitTest {
     Assert.assertEquals(initialResponse.toString(), cachedResponse.toString());
   }
 
+  /**
+   *This test checks the time expiration limit on the cacher, by checking that if a user loads a request then waits for a time limit that when they cache again that it is not the same as initial response.
+   * Tests that two requests made to the server, the first one is not present int he cache anymore after the second one was cached
+   * @throws InterruptedException if there is an interruption
+   */
   @Test
   public void testCachingFunctionalityCacheLimit() throws InterruptedException {
 
     BroadbandData initialResponse = cachingSource.getBroadbandData("california", "orange");
-    BroadbandData secondResponse = cachingSource.getBroadbandData("wisconsin", "dane");
+    BroadbandData secodResponse = cachingSource.getBroadbandData("wisconsin", "dane");
 
     Thread.sleep(1000);
 
@@ -77,6 +99,12 @@ public class ServerBroadbandUnitTest {
     Assert.assertNotEquals(initialResponse.toString(), cachedResponse.toString());
   }
 
+  /**
+   * This ensures that the response from the api websource is correct.
+   * @throws URISyntaxException if the syntax of the url is incorrect
+   * @throws IOException thrown if there is a failure displaying the json data
+   * @throws InterruptedException if there is an interruption
+   */
   @Test
   public void testGetResponseWebSource()
       throws URISyntaxException, IOException, InterruptedException {
@@ -92,6 +120,12 @@ public class ServerBroadbandUnitTest {
     Assert.assertEquals(response.toString(), expectedResponse.toString());
   }
 
+  /**
+   * Tests that if a invalid state or county name is inputted then no such element is asserted
+   * @throws URISyntaxException if the syntax of the url is incorrect
+   * @throws IOException thrown if there is a failure displaying the json data
+   * @throws InterruptedException if there is an interruption
+   */
   @Test
   public void testGetResponseNoSuchElement()
       throws URISyntaxException, IOException, InterruptedException {
@@ -120,6 +154,9 @@ public class ServerBroadbandUnitTest {
         });
   }
 
+  /**
+   * Tests that the broadband handler returns the correct response.
+   */
   @Test
   public void testBroadbandHandlerSuccess() {
     Object successResponse =
@@ -135,36 +172,55 @@ public class ServerBroadbandUnitTest {
     Assert.assertEquals(successResponse.toString(), expectedSuccessResponse);
   }
 
+  /**
+   * Tests that the broadbandhandler displays a failure message when requested without entering a county
+   */
+
   @Test
   public void testBroadbandHandlerFailureNoCounty() {
     Object failureResponse = broadbandHandler.handle(new BroadbandRequest("california", ""), null);
     Assert.assertTrue(failureResponse.toString().contains("County and/or state does not exist."));
   }
 
+  /**
+   * Tests that the broadbandhandler displays a failure message when requested without entering a state
+   */
   @Test
   public void testBroadbandHandlerFailureNoState() {
     Object failureResponse = broadbandHandler.handle(new BroadbandRequest("", "orange"), null);
     Assert.assertTrue(failureResponse.toString().contains("County and/or state does not exist."));
   }
 
+  /**
+   * Tests that the broadbandhandler displays a failure message when requested without entering a county and a state
+   */
   @Test
   public void testBroadbandHandlerFailureNoStateNoCounty() {
     Object failureResponse = broadbandHandler.handle(new BroadbandRequest("", ""), null);
     Assert.assertTrue(failureResponse.toString().contains("County and/or state does not exist."));
   }
 
+  /**
+   * Test that the broadband handler displays a failure message when a null state is requested
+   */
   @Test
   public void testBroadbandHandlerFailureNullState() {
     Object failureResponse = broadbandHandler.handle(new BroadbandRequest(null, ""), null);
     Assert.assertTrue(failureResponse.toString().contains("Missing required query parameter"));
   }
 
+  /**
+   *  Test that the broadband handler displays a failure message when a null county is requested
+   */
   @Test
   public void testBroadbandHandlerFailureNullCounty() {
     Object failureResponse = broadbandHandler.handle(new BroadbandRequest("", null), null);
     Assert.assertTrue(failureResponse.toString().contains("Missing required query parameter"));
   }
 
+  /**
+   * Test that the broadband handler displays a failure message when a null state and null county is requested
+   */
   @Test
   public void testBroadbandHandlerFailureNullCountyNullState() {
     Object failureResponse = broadbandHandler.handle(new BroadbandRequest(null, null), null);
@@ -174,15 +230,15 @@ public class ServerBroadbandUnitTest {
   /**
    * Record representing a successful interaction with broadband response.
    *
-   * @param responseType
-   * @param responseData
+   * @param responseType string of the response type
+   * @param responseData takes in the response data as a broadband data type
    */
   public record BroadbandSuccessResponse(String responseType, BroadbandData responseData) {
 
     /**
      * Constructor which takes in the broadband data class.
      *
-     * @param responseData
+     * @param responseData takes in the response data as a broadband data type
      */
     public BroadbandSuccessResponse(BroadbandData responseData) {
       this("Loaded successfully! :)", responseData);
@@ -192,7 +248,7 @@ public class ServerBroadbandUnitTest {
      * Serialize method uses moshi to turn the java data into a JSON string accessible by the viewer
      * when the request and response were successful this is called in the handle method.
      *
-     * @return
+     * @return a string of serialized data
      */
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();
@@ -216,7 +272,7 @@ public class ServerBroadbandUnitTest {
      * Constructor for the broadband failure response, which takes an a string to describe the
      * error.
      *
-     * @param errorDescription
+     * @param errorDescription the description of the error
      */
     public BroadbandFailureResponse(String errorDescription) {
       this("Error", LocalDateTime.now().toString(), errorDescription);
@@ -227,7 +283,7 @@ public class ServerBroadbandUnitTest {
      * string describing what went wrong when handling the request. This method is called in the
      * handle method upon invalid requests and errors.
      *
-     * @return
+     * @return a string of serialized data
      */
     String serialize() {
       Moshi moshi = new Moshi.Builder().build();
