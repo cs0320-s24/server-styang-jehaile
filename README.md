@@ -15,7 +15,13 @@
 
 README:
 #Project details:
--ADD
+-This is our server project which handles: setting up a web API server that provides access to multiple data sources;
+using proxy and other patterns to mediate access to that data;
+serializing and deserializing JSON messages;
+the difference between unit and integration testing, and how to practice the latter;
+the value of “mocking” data; and
+how to "fuzz" test your program with random inputs.
+
 #Project name:
 Server
 #Project description:
