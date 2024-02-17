@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.testng.Assert;
 
 /**
- * The servercsvunit tests tests confirm that our program works even if a user wanted locally interact.
+ * The servercsvunit tests confirm that our program works even if a user wanted locally interact.
  */
 public class ServerCSVUnitTest {
 
@@ -119,6 +119,27 @@ public class ServerCSVUnitTest {
 
     String failureResponse = new LoadCSVFailureResponse("Error reading file").serialize();
     Assert.assertEquals(response, failureResponse);
+  }
+
+  /**
+   * Tests loading two files in a row
+   */
+  @Test
+  public void testLoadCSVHandlerTwiceSearch() {
+    LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequest, null);
+    SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, null);
+    String response = this.searchCSVHandler.handle(searchCSVRequest, null);
+
+    Assert.assertTrue(response.contains("Proxima Centauri"));
+
+    LoadCSVRequest loadCSVRequestTwo = new LoadCSVRequest("postsecondary_education.csv", "true");
+    this.loadCSVHandler.handle(loadCSVRequestTwo, null);
+    SearchCSVRequest searchCSVRequestTwo = new SearchCSVRequest("0.027499191", null, null);
+    String responseTwo = this.searchCSVHandler.handle(searchCSVRequestTwo, null);
+
+    Assert.assertTrue(responseTwo.contains("Two or More Races"));
+
   }
 
   /**
