@@ -14,7 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testng.Assert;
 
-
+/**
+ * The servercsvunit tests tests confirm that our program works even if a user wanted locally interact.
+ */
 public class ServerCSVUnitTest {
 
   private CSVDataSource csvDataSource;
@@ -30,6 +32,9 @@ public class ServerCSVUnitTest {
     this.searchCSVHandler = new SearchCSVHandler(this.csvDataSource);
   }
 
+  /**
+   * Tests that the loadcsv handler works correctly
+   */
   @Test
   public void testLoadCSVHandlerSuccess() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
@@ -39,6 +44,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, successResponse);
   }
 
+  /**
+   * Tests that the loadcsv handler displays a message that malformed data cant be parsed and loaded
+   */
   @Test
   public void testLoadCSVHandlerFailureMalformed() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("malformed_signs.csv", "true");
@@ -49,6 +57,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   *Tests that the loadcsv handler displays a message that if no file name is provided it cant be parsed and loaded
+   */
   @Test
   public void testLoadCSVHandlerFailureNoFilename() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest(null, "true");
@@ -59,6 +70,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * Tests that the loadcsv handler displays a message that if a file is not found it cant be parsed and loaded
+   */
   @Test
   public void testLoadCSVHandlerFailureFileNotFound() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("no.csv", "true");
@@ -68,6 +82,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * Tests that the loadcsv handler displays a message that if null headers( are passed in it be parsed and loaded
+   */
   @Test
   public void testLoadCSVHandlerNullHeaders() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", null);
@@ -78,6 +95,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * Tests that the loadcsv handler displays a message that if malformed headers are passed in it be parsed and loaded
+   */
   @Test
   public void testLoadCSVHandlerMalformedHeaders() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "maybe");
@@ -88,6 +108,10 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * Tests that the loadcsv handler displays a message that if an inaccessible file name is passed in it be parsed and loaded
+   */
+
   @Test
   public void testLoadCSVHandlerFailureNotAccessible() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("inaccessibledata.csv", "true");
@@ -97,6 +121,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * Test that there is a good success response from the search handler
+   */
   @Test
   public void testSearchCSVSuccess() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
@@ -106,6 +133,10 @@ public class ServerCSVUnitTest {
 
     Assert.assertTrue(response.contains("Proxima Centauri"));
   }
+
+  /**
+   * dTests that the searchcsv handler displays a failure message that if column doesnt exist are passed in it be parsed and loaded
+   */
 
   @Test
   public void testSearchCSVFailureColumnDoesNotExist() {
@@ -119,6 +150,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * Tests that the searchcsv handler displays a failure message that if column index is incorrect a file cant be passed in it be parsed and loaded
+   */
   @Test
   public void testSearchCSVFailureColumnIndexWrongInput() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
@@ -131,6 +165,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * test the failure
+   */
   @Test
   public void testSearchCSVFailureColumnHeaderNotExist() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
@@ -142,6 +179,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * test the failure if a column header
+   */
   @Test
   public void testSearchCSVFailureColumnHeadersAndIndex() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
@@ -152,6 +192,9 @@ public class ServerCSVUnitTest {
     Assert.assertTrue(response.contains("Proxima Centauri"));
   }
 
+  /**
+   * Test that a file cant be search if it is not loaded
+   */
   @Test
   public void testSearchBeforeLoad() {
     SearchCSVRequest searchCSVRequest = new SearchCSVRequest("Proxima", null, null);
@@ -161,6 +204,9 @@ public class ServerCSVUnitTest {
     Assert.assertEquals(response, failureResponse);
   }
 
+  /**
+   * tests a successful viewing of a csv file using the handler
+   */
   @Test
   public void testViewSuccess() {
     LoadCSVRequest loadCSVRequest = new LoadCSVRequest("ten-star.csv", "true");
@@ -179,6 +225,9 @@ public class ServerCSVUnitTest {
         + "\"-1.81533\",\"0.14824\"],[\"118721\",\"\",\"-2.28262\",\"0.64697\",\"0.29354\"]]}}");
   }
 
+  /**
+   * This test checks the failuyre message of a failure to view if not loaded
+   */
   @Test
   public void testViewFailureNoLoad() {
     ViewCSVRequest viewCSVRequest = new ViewCSVRequest();
